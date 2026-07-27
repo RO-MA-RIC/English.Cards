@@ -1,0 +1,1531 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>English Cards</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:#d7dbe3;font-family:-apple-system,"SF Pro Display","SF Pro Text",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:#4F8EF7;text-decoration:none}
+  a:hover{color:#3B7DE8}
+  .ec-scroll{overflow-y:auto;scrollbar-width:none}
+  .ec-scroll::-webkit-scrollbar{display:none}
+  @keyframes ec-in{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:translateX(0)}}
+  @keyframes ec-up{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes ec-pop{0%{transform:scale(.85);opacity:0}60%{transform:scale(1.04)}100%{transform:scale(1);opacity:1}}
+  @keyframes ec-conf{0%{transform:translateY(-20px) rotate(0);opacity:1}100%{transform:translateY(560px) rotate(720deg);opacity:0}}
+  @keyframes ec-flame{0%,100%{transform:scale(1) rotate(-3deg)}50%{transform:scale(1.12) rotate(3deg)}}
+  @keyframes ec-ring{from{stroke-dashoffset:326}}
+  .ec-btn{transition:transform .12s cubic-bezier(.34,1.56,.64,1),filter .15s;cursor:pointer;border:none;font-family:inherit}
+  .ec-btn:active{transform:scale(.94)}
+  .ec-scr{animation:ec-in .32s cubic-bezier(.2,.7,.2,1)}
+  html,body{height:100%}
+  #app{min-height:100vh}
+</style>
+</head>
+<body>
+
+<template id="tpl">
+<div style="{{ themeVars }};position:relative;width:100vw;height:100vh;overflow:hidden;background:var(--bg,#EEF1F7);display:flex;flex-direction:column">
+
+    <!-- ============ SCREENS ============ -->
+    <div class="ec-scroll" style="flex:1;position:relative;overflow:hidden">
+
+    <!-- HOME -->
+    <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+      <div class="ec-scr ec-scroll" style="position:absolute;inset:0;padding:64px 20px 108px;overflow-y:auto">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+          <div>
+            <div style="font-size:14px;color:var(--muted,#8A8FA3);font-weight:600">Bonjour, {{ userName }} 👋</div>
+            <div style="font-size:26px;font-weight:800;color:var(--text,#12172B);letter-spacing:-.5px">Let's learn today</div>
+          </div>
+          <div style="display:flex;gap:10px">
+            <div class="ec-btn" onClick="{{ goSearch }}" style="width:46px;height:46px;border-radius:16px;background:var(--card,#fff);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px -8px rgba(40,60,110,.35)">
+              <span style="font-size:20px">🔍</span>
+            </div>
+            <div class="ec-btn" onClick="{{ goSettings }}" style="width:46px;height:46px;border-radius:16px;background:var(--card,#fff);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px -8px rgba(40,60,110,.35)">
+              <span style="font-size:20px">⚙️</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- streak + xp -->
+        <div style="display:flex;gap:12px;margin-bottom:16px">
+          <div style="flex:1;background:linear-gradient(135deg,#FFB648,#FF9A3D);border-radius:22px;padding:16px;color:#fff;box-shadow:0 12px 26px -12px rgba(255,150,60,.7)">
+            <div style="font-size:30px;animation:ec-flame 1.6s ease-in-out infinite;display:inline-block">🔥</div>
+            <div style="font-size:26px;font-weight:800;line-height:1;margin-top:4px">{{ streak }}</div>
+            <div style="font-size:12px;font-weight:600;opacity:.92">day streak</div>
+          </div>
+          <div style="flex:1.5;background:var(--card,#fff);border-radius:22px;padding:16px;box-shadow:0 10px 26px -14px rgba(40,60,110,.4)">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+              <span style="font-size:13px;font-weight:700;color:var(--text,#12172B)">Level {{ level }}</span>
+              <span style="font-size:12px;font-weight:700;color:#4F8EF7">💎 {{ xp }} XP</span>
+            </div>
+            <div style="height:12px;background:var(--track,#EDF0F6);border-radius:8px;overflow:hidden">
+              <div style="width:{{ xpPct }};height:100%;background:linear-gradient(90deg,#4F8EF7,#7A6BF7);border-radius:8px;transition:width .8s"></div>
+            </div>
+            <div style="font-size:11px;color:var(--muted,#8A8FA3);margin-top:8px;font-weight:600">{{ xpLeft }} XP to level {{ nextLevel }}</div>
+            <div style="display:flex;gap:6px;margin-top:12px">
+              <span style="font-size:22px">🏅</span><span style="font-size:22px">🥈</span><span style="font-size:22px;opacity:.3">🏆</span><span style="font-size:22px;opacity:.3">👑</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- daily goal -->
+        <div style="background:var(--card,#fff);border-radius:24px;padding:18px;margin-bottom:16px;display:flex;align-items:center;gap:18px;box-shadow:0 10px 26px -14px rgba(40,60,110,.4)">
+          <div style="position:relative;width:84px;height:84px;flex:none">
+            <svg width="84" height="84" viewBox="0 0 116 116">
+              <circle cx="58" cy="58" r="52" fill="none" stroke="var(--track,#EDF0F6)" stroke-width="12"></circle>
+              <circle cx="58" cy="58" r="52" fill="none" stroke="#59C173" stroke-width="12" stroke-linecap="round" stroke-dasharray="326" stroke-dashoffset="{{ goalOffset }}" transform="rotate(-90 58 58)" style="transition:stroke-dashoffset 1s ease"></circle>
+            </svg>
+            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+              <span style="font-size:19px;font-weight:800;color:var(--text,#12172B)">{{ dailyDone }}</span>
+              <span style="font-size:10px;color:var(--muted,#8A8FA3);font-weight:600">/ {{ dailyGoal }}</span>
+            </div>
+          </div>
+          <div style="flex:1">
+            <div style="font-size:16px;font-weight:800;color:var(--text,#12172B)">Daily goal</div>
+            <div style="font-size:13px;color:var(--muted,#8A8FA3);margin-top:2px">{{ dailyLeft }} words left to hit today's goal. Keep going! 💪</div>
+          </div>
+        </div>
+
+        <!-- stats row -->
+        <div style="display:flex;gap:10px;margin-bottom:18px">
+          <div style="flex:1;background:var(--card,#fff);border-radius:18px;padding:14px;text-align:center;box-shadow:0 8px 22px -14px rgba(40,60,110,.4)">
+            <div style="font-size:22px;font-weight:800;color:#4F8EF7">{{ learnedCount }}</div>
+            <div style="font-size:10.5px;color:var(--muted,#8A8FA3);font-weight:600;margin-top:2px">Words learned</div>
+          </div>
+          <div style="flex:1;background:var(--card,#fff);border-radius:18px;padding:14px;text-align:center;box-shadow:0 8px 22px -14px rgba(40,60,110,.4)">
+            <div style="font-size:22px;font-weight:800;color:#FFB648">{{ reviewCount }}</div>
+            <div style="font-size:10.5px;color:var(--muted,#8A8FA3);font-weight:600;margin-top:2px">To review</div>
+          </div>
+          <div style="flex:1;background:var(--card,#fff);border-radius:18px;padding:14px;text-align:center;box-shadow:0 8px 22px -14px rgba(40,60,110,.4)">
+            <div style="font-size:22px;font-weight:800;color:#59C173">{{ successRate }}%</div>
+            <div style="font-size:10.5px;color:var(--muted,#8A8FA3);font-weight:600;margin-top:2px">Success rate</div>
+          </div>
+        </div>
+
+        <!-- continue -->
+        <button class="ec-btn" onClick="{{ startSession }}" style="width:100%;background:linear-gradient(135deg,#4F8EF7,#5B7CF9);color:#fff;border-radius:20px;padding:18px;font-size:17px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 16px 30px -12px rgba(79,142,247,.7);margin-bottom:22px">
+          <span style="font-size:20px">▶️</span> Continue learning
+        </button>
+
+        <!-- quick categories -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <span style="font-size:17px;font-weight:800;color:var(--text,#12172B)">Categories</span>
+          <span class="ec-btn" onClick="{{ goCategories }}" style="font-size:13px;font-weight:700;color:#4F8EF7">See all</span>
+        </div>
+        <div class="ec-scroll" style="display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;margin:0 -20px;padding-left:20px;padding-right:20px">
+          <sc-for list="{{ cats }}" as="cat" hint-placeholder-count="4">
+            <div class="ec-btn" onClick="{{ cat.onClick }}" style="flex:none;width:132px;background:var(--card,#fff);border-radius:20px;padding:15px;box-shadow:0 8px 22px -14px rgba(40,60,110,.4)">
+              <div style="width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;background:{{ cat.tint }}">{{ cat.emoji }}</div>
+              <div style="font-size:14px;font-weight:800;color:var(--text,#12172B);margin-top:10px">{{ cat.name }}</div>
+              <div style="font-size:11px;color:var(--muted,#8A8FA3);font-weight:600;margin:3px 0 8px">{{ cat.done }}/{{ cat.total }} words</div>
+              <div style="height:7px;background:var(--track,#EDF0F6);border-radius:5px;overflow:hidden"><div style="width:{{ cat.pct }};height:100%;background:{{ cat.color }};border-radius:5px"></div></div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- LEARN HUB -->
+    <sc-if value="{{ isLearn }}" hint-placeholder-val="{{ false }}">
+      <div class="ec-scr ec-scroll" style="position:absolute;inset:0;padding:64px 20px 108px;overflow-y:auto">
+        <div style="font-size:28px;font-weight:800;color:var(--text,#12172B);letter-spacing:-.6px;margin-bottom:4px">Learn</div>
+        <div style="font-size:14px;color:var(--muted,#8A8FA3);margin-bottom:20px">Pick a mode to practise your words</div>
+        <button class="ec-btn" onClick="{{ startDaily }}" style="width:100%;text-align:left;background:linear-gradient(135deg,#59C173,#3FB985);border-radius:22px;padding:18px;color:#fff;display:flex;align-items:center;gap:14px;margin-bottom:16px;box-shadow:0 14px 28px -14px rgba(89,193,115,.7)">
+          <span style="font-size:34px">📅</span>
+          <div style="flex:1"><div style="font-size:17px;font-weight:800">Daily Review</div><div style="font-size:12.5px;opacity:.92">{{ reviewCount }} words are due today</div></div>
+          <span style="font-size:20px">›</span>
+        </button>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <sc-for list="{{ modes }}" as="m" hint-placeholder-count="5">
+            <button class="ec-btn" onClick="{{ m.onClick }}" style="text-align:left;background:var(--card,#fff);border-radius:20px;padding:16px;box-shadow:0 8px 22px -14px rgba(40,60,110,.4)">
+              <div style="width:48px;height:48px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:26px;background:{{ m.tint }}">{{ m.emoji }}</div>
+              <div style="font-size:15px;font-weight:800;color:var(--text,#12172B);margin-top:12px">{{ m.name }}</div>
+              <div style="font-size:11.5px;color:var(--muted,#8A8FA3);margin-top:3px;line-height:1.35">{{ m.desc }}</div>
+            </button>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- CATEGORIES -->
+    <sc-if value="{{ isCategories }}" hint-placeholder-val="{{ false }}">
+      <div class="ec-scr ec-scroll" style="position:absolute;inset:0;padding:64px 20px 108px;overflow-y:auto">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <div style="font-size:28px;font-weight:800;color:var(--text,#12172B);letter-spacing:-.6px">Categories</div>
+          <div class="ec-btn" onClick="{{ goAdd }}" style="width:42px;height:42px;border-radius:14px;background:#4F8EF7;color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:600;box-shadow:0 10px 22px -10px rgba(79,142,247,.7)">+</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <sc-for list="{{ cats }}" as="cat" hint-placeholder-count="6">
+            <div class="ec-btn" onClick="{{ cat.onClick }}" style="background:var(--card,#fff);border-radius:22px;padding:16px;box-shadow:0 10px 26px -16px rgba(40,60,110,.45)">
+              <div style="width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:28px;background:{{ cat.tint }}">{{ cat.emoji }}</div>
+              <div style="font-size:16px;font-weight:800;color:var(--text,#12172B);margin-top:12px">{{ cat.name }}</div>
+              <div style="font-size:11.5px;color:var(--muted,#8A8FA3);font-weight:600;margin:3px 0 10px">{{ cat.done }} / {{ cat.total }} words</div>
+              <div style="height:8px;background:var(--track,#EDF0F6);border-radius:6px;overflow:hidden"><div style="width:{{ cat.pct }};height:100%;background:{{ cat.color }};border-radius:6px;transition:width .8s"></div></div>
+              <div style="font-size:11px;font-weight:700;color:{{ cat.color }};margin-top:8px">{{ cat.pct }} complete</div>
+            </div>
+          </sc-for>
+          <div class="ec-btn" onClick="{{ goAddCat }}" style="background:var(--card,#fff);border-radius:22px;padding:16px;box-shadow:0 10px 26px -16px rgba(40,60,110,.45);border:2px dashed var(--line,rgba(0,0,0,.14));display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:150px">
+            <div style="font-size:28px;color:#4F8EF7">＋</div>
+            <div style="font-size:13px;font-weight:800;color:#4F8EF7;margin-top:8px">New category</div>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- STATS -->
+    <sc-if value="{{ isStats }}" hint-placeholder-val="{{ false }}">
+      <div class="ec-scr ec-scroll" style="position:absolute;inset:0;padding:64px 20px 108px;overflow-y:auto">
+        <div style="font-size:28px;font-weight:800;color:var(--text,#12172B);letter-spacing:-.6px;margin-bottom:18px">Statistics</div>
+        <div style="background:linear-gradient(135deg,#FFB648,#FF8F3D);border-radius:24px;padding:20px;color:#fff;display:flex;align-items:center;gap:16px;margin-bottom:16px;box-shadow:0 14px 30px -14px rgba(255,150,60,.6)">
+          <div style="font-size:46px;animation:ec-flame 1.6s ease-in-out infinite">🔥</div>
+          <div><div style="font-size:34px;font-weight:800;line-height:1">{{ streak }} days</div><div style="font-size:13px;opacity:.92;font-weight:600">Current learning streak · best 21</div></div>
+        </div>
+        <div style="display:flex;gap:12px;margin-bottom:16px">
+          <div style="flex:1;background:var(--card,#fff);border-radius:20px;padding:16px;box-shadow:0 8px 22px -14px rgba(40,60,110,.4)"><div style="font-size:26px;font-weight:800;color:#4F8EF7">{{ learnedCount }}</div><div style="font-size:11.5px;color:var(--muted,#8A8FA3);font-weight:600">Words learned</div></div>
+          <div style="flex:1;background:var(--card,#fff);border-radius:20px;padding:16px;box-shadow:0 8px 22px -14px rgba(40,60,110,.4)"><div style="font-size:26px;font-weight:800;color:#59C173">{{ successRate }}%</div><div style="font-size:11.5px;color:var(--muted,#8A8FA3);font-weight:600">Success rate</div></div>
+        </div>
+        <div style="background:var(--card,#fff);border-radius:24px;padding:18px;margin-bottom:16px;box-shadow:0 10px 26px -16px rgba(40,60,110,.45)">
+          <div style="font-size:15px;font-weight:800;color:var(--text,#12172B);margin-bottom:16px">This week</div>
+          <div style="display:flex;align-items:flex-end;justify-content:space-between;height:130px;gap:8px">
+            <sc-for list="{{ week }}" as="d" hint-placeholder-count="7">
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;height:100%;justify-content:flex-end">
+                <div style="width:100%;max-width:26px;height:{{ d.h }};background:{{ d.color }};border-radius:8px;transition:height .8s"></div>
+                <span style="font-size:11px;color:var(--muted,#8A8FA3);font-weight:700">{{ d.label }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="background:var(--card,#fff);border-radius:24px;padding:18px;box-shadow:0 10px 26px -16px rgba(40,60,110,.45)">
+          <div style="font-size:15px;font-weight:800;color:var(--text,#12172B);margin-bottom:14px">Category progress</div>
+          <sc-for list="{{ cats }}" as="cat" hint-placeholder-count="4">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+              <span style="font-size:22px">{{ cat.emoji }}</span>
+              <div style="flex:1">
+                <div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:13px;font-weight:700;color:var(--text,#12172B)">{{ cat.name }}</span><span style="font-size:12px;font-weight:700;color:var(--muted,#8A8FA3)">{{ cat.pct }}</span></div>
+                <div style="height:7px;background:var(--track,#EDF0F6);border-radius:5px;overflow:hidden"><div style="width:{{ cat.pct }};height:100%;background:{{ cat.color }};border-radius:5px"></div></div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- SETTINGS -->
+    <sc-if value="{{ isSettings }}" hint-placeholder-val="{{ false }}">
+      <div class="ec-scr ec-scroll" style="position:absolute;inset:0;padding:64px 20px 108px;overflow-y:auto">
+        <div style="font-size:28px;font-weight:800;color:var(--text,#12172B);letter-spacing:-.6px;margin-bottom:18px">Settings</div>
+        <div style="background:var(--card,#fff);border-radius:22px;padding:6px 18px;margin-bottom:16px;box-shadow:0 8px 22px -16px rgba(40,60,110,.4)">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--line,rgba(0,0,0,.06))">
+            <div style="display:flex;align-items:center;gap:12px"><span style="font-size:20px">🌙</span><span style="font-size:15px;font-weight:600;color:var(--text,#12172B)">Dark mode</span></div>
+            <div class="ec-btn" onClick="{{ toggleDark }}" style="width:52px;height:31px;border-radius:16px;background:{{ darkTrack }};padding:3px;display:flex;transition:background .25s">
+              <div style="width:25px;height:25px;border-radius:50%;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.25);transform:translateX({{ darkKnob }});transition:transform .25s"></div>
+            </div>
+          </div>
+          <div style="padding:14px 0;border-bottom:1px solid var(--line,rgba(0,0,0,.06))">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><span style="font-size:20px">🎨</span><span style="font-size:15px;font-weight:600;color:var(--text,#12172B)">Accent color</span></div>
+            <div style="display:flex;gap:12px;padding-left:32px">
+              <sc-for list="{{ accents }}" as="a" hint-placeholder-count="4">
+                <div class="ec-btn" onClick="{{ a.onClick }}" style="width:34px;height:34px;border-radius:50%;background:{{ a.color }};display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;box-shadow:0 4px 10px -3px {{ a.color }}">{{ a.check }}</div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="padding:14px 0">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><span style="font-size:20px">🔄</span><span style="font-size:15px;font-weight:600;color:var(--text,#12172B)">Sens de révision</span></div>
+            <div style="display:flex;background:var(--track,#EDF0F6);border-radius:14px;padding:4px;gap:4px">
+              <sc-for list="{{ dirModes }}" as="d" hint-placeholder-count="3">
+                <div class="ec-btn" onClick="{{ d.onClick }}" style="flex:1;text-align:center;padding:9px 4px;border-radius:11px;background:{{ d.bg }};box-shadow:{{ d.shadow }};transition:all .2s">
+                  <div lang="en" translate="no" style="font-size:13px;font-weight:800;color:{{ d.fg }}">{{ d.label }}</div>
+                  <div style="font-size:9.5px;font-weight:600;color:var(--muted,#8A8FA3);margin-top:1px">{{ d.sub }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+        <div style="background:var(--card,#fff);border-radius:22px;padding:0 18px;margin-bottom:16px;box-shadow:0 8px 22px -16px rgba(40,60,110,.4)">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:15px 0;border-bottom:1px solid var(--line,rgba(0,0,0,.06))">
+            <div style="display:flex;align-items:center;gap:12px"><span style="font-size:20px">☁️</span><span style="font-size:15px;font-weight:600;color:var(--text,#12172B)">Cloud sync</span></div>
+            <div style="width:52px;height:31px;border-radius:16px;background:#59C173;padding:3px;display:flex;justify-content:flex-end"><div style="width:25px;height:25px;border-radius:50%;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.25)"></div></div>
+          </div>
+          <div class="ec-btn" onClick="{{ goImport }}" style="display:flex;align-items:center;justify-content:space-between;padding:15px 0;border-bottom:1px solid var(--line,rgba(0,0,0,.06))"><div style="display:flex;align-items:center;gap:12px"><span style="font-size:20px">📥</span><span style="font-size:15px;font-weight:600;color:var(--text,#12172B)">Import vocabulary</span></div><span style="color:var(--muted,#8A8FA3)">›</span></div>
+          <div class="ec-btn" style="display:flex;align-items:center;justify-content:space-between;padding:15px 0;border-bottom:1px solid var(--line,rgba(0,0,0,.06))"><div style="display:flex;align-items:center;gap:12px"><span style="font-size:20px">📤</span><span style="font-size:15px;font-weight:600;color:var(--text,#12172B)">Export data</span></div><span style="color:var(--muted,#8A8FA3)">›</span></div>
+          <div class="ec-btn" onClick="{{ goWordlist }}" style="display:flex;align-items:center;justify-content:space-between;padding:15px 0"><div style="display:flex;align-items:center;gap:12px"><span style="font-size:20px">📖</span><span style="font-size:15px;font-weight:600;color:var(--text,#12172B)">Mes mots</span></div><span style="color:var(--muted,#8A8FA3)">›</span></div>
+        </div>
+        <div style="background:var(--card,#fff);border-radius:22px;padding:0 18px;box-shadow:0 8px 22px -16px rgba(40,60,110,.4)">
+          <div class="ec-btn" style="display:flex;align-items:center;justify-content:space-between;padding:15px 0"><div style="display:flex;align-items:center;gap:12px"><span style="font-size:20px">ℹ️</span><span style="font-size:15px;font-weight:600;color:var(--text,#12172B)">About English Cards</span></div><span style="color:var(--muted,#8A8FA3)">v1.0</span></div>
+        </div>
+        <div style="text-align:center;margin-top:22px;color:var(--muted,#8A8FA3);font-size:12px">Offline-first · One profile · No ads</div>
+      </div>
+    </sc-if>
+
+    <!-- ============ FLASHCARD SESSION ============ -->
+    <sc-if value="{{ isSession }}" hint-placeholder-val="{{ false }}">
+      <div class="ec-scr" style="position:absolute;inset:0;background:var(--bg,#EEF1F7);padding:64px 20px 32px;display:flex;flex-direction:column">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+          <div class="ec-btn" onClick="{{ goHome }}" style="width:34px;height:34px;border-radius:11px;background:var(--card,#fff);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--muted,#8A8FA3);box-shadow:0 4px 12px -6px rgba(40,60,110,.4)">✕</div>
+          <div style="flex:1;height:12px;background:var(--track,#EDF0F6);border-radius:8px;overflow:hidden"><div style="width:{{ sPct }};height:100%;background:linear-gradient(90deg,#4F8EF7,#59C173);border-radius:8px;transition:width .4s"></div></div>
+          <span style="font-size:13px;font-weight:800;color:var(--text,#12172B)">{{ sCount }}</span>
+        </div>
+
+        <div class="ec-btn" onClick="{{ flip }}" style="flex:1;perspective:1600px;margin-bottom:20px">
+          <div data-key="card-{{ sKey }}" style="position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.4,.2,.2,1);transform:{{ flipT }}">
+            <!-- front -->
+            <div style="position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--card,#fff);border-radius:30px;padding:28px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 24px 50px -24px rgba(40,60,110,.5)">
+              <span lang="en" translate="no" style="position:absolute;top:20px;left:20px;font-size:12px;font-weight:800;color:#fff;background:{{ sDirColor }};padding:6px 12px;border-radius:20px">{{ sDirLabel }}</span>
+              <span style="position:absolute;top:20px;right:20px;font-size:22px">{{ sCur.emoji }}</span>
+              <div style="font-size:{{ sFrontSize }};font-weight:800;color:var(--text,#12172B);text-align:center;letter-spacing:-.5px;line-height:1.15">{{ sFront }}</div>
+              <div style="font-size:16px;color:var(--muted,#8A8FA3);margin-top:10px;font-weight:500">{{ sFrontSub }}</div>
+              <div style="position:absolute;bottom:22px;font-size:12.5px;color:var(--muted,#8A8FA3);font-weight:600">👆 Tap to reveal</div>
+            </div>
+            <!-- back -->
+            <div style="position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:rotateY(180deg);background:linear-gradient(160deg,#4F8EF7,#5B7CF9);border-radius:30px;padding:28px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;box-shadow:0 24px 50px -24px rgba(79,142,247,.6)">
+              <div style="font-size:{{ sBackSize }};font-weight:800;text-align:center;letter-spacing:-.5px;line-height:1.15">{{ sBack }}</div>
+              <sc-if value="{{ sHasIpa }}" hint-placeholder-val="{{ false }}"><div style="font-size:17px;opacity:.85;margin-top:8px">{{ sCur.ipa }}</div></sc-if>
+              <sc-if value="{{ sHasEx }}" hint-placeholder-val="{{ false }}"><div style="width:60px;height:2px;background:rgba(255,255,255,.35);margin:20px 0;border-radius:2px"></div><div lang="en" translate="no" style="font-size:16px;text-align:center;line-height:1.5;font-style:italic;opacity:.95">"{{ sCur.ex }}"</div></sc-if>
+              <span style="position:absolute;top:20px;right:20px;font-size:20px;opacity:.9">🔊</span>
+            </div>
+          </div>
+        </div>
+
+        <sc-if value="{{ flipped }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;gap:12px;animation:ec-up .3s">
+            <button class="ec-btn" onClick="{{ answerNo }}" style="flex:1;background:var(--card,#fff);color:#FF6B6B;border:2px solid #FFE0E0;border-radius:20px;padding:17px;font-size:16px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px">❌ Didn't know</button>
+            <button class="ec-btn" onClick="{{ answerYes }}" style="flex:1;background:#59C173;color:#fff;border-radius:20px;padding:17px;font-size:16px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 14px 26px -12px rgba(89,193,115,.7)">✅ I knew it</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ notFlipped }}" hint-placeholder-val="{{ true }}">
+          <button class="ec-btn" onClick="{{ flip }}" style="width:100%;background:#4F8EF7;color:#fff;border-radius:20px;padding:17px;font-size:16px;font-weight:800;box-shadow:0 14px 26px -12px rgba(79,142,247,.7)">Reveal answer</button>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <!-- QUIZ -->
+    <sc-if value="{{ isQuiz }}" hint-placeholder-val="{{ false }}">
+      <div class="ec-scr" style="position:absolute;inset:0;background:var(--bg,#EEF1F7);padding:64px 20px 32px;display:flex;flex-direction:column">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">
+          <div class="ec-btn" onClick="{{ goLearn }}" style="width:34px;height:34px;border-radius:11px;background:var(--card,#fff);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--muted,#8A8FA3)">✕</div>
+          <div style="flex:1;height:12px;background:var(--track,#EDF0F6);border-radius:8px;overflow:hidden"><div style="width:{{ qPct }};height:100%;background:#7A6BF7;border-radius:8px;transition:width .4s"></div></div>
+          <span style="font-size:13px;font-weight:800;color:var(--text,#12172B)">{{ qCount }}</span>
+        </div>
+        <div style="font-size:13px;font-weight:800;color:#7A6BF7;letter-spacing:.5px;margin-bottom:8px">CHOOSE THE TRANSLATION</div>
+        <div style="background:var(--card,#fff);border-radius:26px;padding:36px 20px;text-align:center;margin-bottom:24px;box-shadow:0 16px 40px -22px rgba(40,60,110,.5)">
+          <div style="font-size:40px;font-weight:800;color:var(--text,#12172B);letter-spacing:-1px">{{ qWord }}</div>
+          <div style="font-size:15px;color:var(--muted,#8A8FA3);margin-top:8px">{{ qIpa }}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;flex:1">
+          <sc-for list="{{ qOptions }}" as="opt" hint-placeholder-count="4">
+            <button class="ec-btn" onClick="{{ opt.onClick }}" style="width:100%;background:{{ opt.bg }};color:{{ opt.fg }};border:2px solid {{ opt.border }};border-radius:18px;padding:18px;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:space-between">
+              <span>{{ opt.text }}</span><span style="font-size:18px">{{ opt.icon }}</span>
+            </button>
+          </sc-for>
+        </div>
+        <sc-if value="{{ qAnswered }}" hint-placeholder-val="{{ false }}">
+          <button class="ec-btn" onClick="{{ qNext }}" style="width:100%;background:#59C173;color:#fff;border-radius:20px;padding:17px;font-size:16px;font-weight:800;margin-top:16px;box-shadow:0 14px 26px -12px rgba(89,193,115,.7);animation:ec-up .3s">Continue →</button>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <!-- WRITE -->
+    <sc-if value="{{ isWrite }}" hint-placeholder-val="{{ false }}">
+      <div class="ec-scr" style="position:absolute;inset:0;background:var(--bg,#EEF1F7);padding:64px 20px 32px;display:flex;flex-direction:column">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">
+          <div class="ec-btn" onClick="{{ goLearn }}" style="width:34px;height:34px;border-radius:11px;background:var(--card,#fff);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--muted,#8A8FA3)">✕</div>
+          <div style="flex:1;height:12px;background:var(--track,#EDF0F6);border-radius:8px;overflow:hidden"><div style="width:{{ wPct }};height:100%;background:#F77AC4;border-radius:8px;transition:width .4s"></div></div>
+          <span style="font-size:13px;font-weight:800;color:var(--text,#12172B)">{{ wCount }}</span>
+        </div>
+        <div style="font-size:13px;font-weight:800;color:#F77AC4;letter-spacing:.5px;margin-bottom:8px">WRITE THE TRANSLATION</div>
+        <div style="background:var(--card,#fff);border-radius:26px;padding:34px 20px;text-align:center;margin-bottom:20px;box-shadow:0 16px 40px -22px rgba(40,60,110,.5)">
+          <div style="font-size:22px">{{ wEmoji }}</div>
+          <div style="font-size:38px;font-weight:800;color:var(--text,#12172B);letter-spacing:-1px;margin-top:8px">{{ wWord }}</div>
+          <div style="font-size:13px;color:var(--muted,#8A8FA3);margin-top:6px">Type it in {{ wTargetLang }}</div>
+        </div>
+        <input value="{{ wVal }}" onInput="{{ wInput }}" placeholder="Your answer…" style="width:100%;background:var(--card,#fff);border:2px solid {{ wInputBorder }};border-radius:18px;padding:18px;font-size:18px;font-weight:600;color:var(--text,#12172B);outline:none;font-family:inherit;text-align:center" />
+        <sc-if value="{{ wChecked }}" hint-placeholder-val="{{ false }}">
+          <div style="text-align:center;margin-top:16px;font-size:15px;font-weight:700;color:{{ wResultColor }};animation:ec-pop .3s">{{ wResultText }}</div>
+        </sc-if>
+        <div style="flex:1"></div>
+        <button class="ec-btn" onClick="{{ wAction }}" style="width:100%;background:{{ wBtnColor }};color:#fff;border-radius:20px;padding:17px;font-size:16px;font-weight:800;box-shadow:0 14px 26px -12px rgba(79,142,247,.5)">{{ wBtnText }}</button>
+      </div>
+    </sc-if>
+
+    <!-- MATCHING -->
+    <sc-if value="{{ isMatch }}" hint-placeholder-val="{{ false }}">
+      <div class="ec-scr" style="position:absolute;inset:0;background:var(--bg,#EEF1F7);padding:64px 20px 32px;display:flex;flex-direction:column">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+          <div class="ec-btn" onClick="{{ goLearn }}" style="width:34px;height:34px;border-radius:11px;background:var(--card,#fff);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--muted,#8A8FA3)">✕</div>
+          <span style="font-size:16px;font-weight:800;color:var(--text,#12172B)">Word Matching</span>
+        </div>
+        <div style="font-size:13px;color:var(--muted,#8A8FA3);margin-bottom:20px">Tap a word, then its translation. {{ mMatchedCount }}/{{ mTotal }} matched.</div>
+        <div style="display:flex;gap:14px;flex:1">
+          <div style="flex:1;display:flex;flex-direction:column;gap:12px">
+            <sc-for list="{{ mLeft }}" as="it" hint-placeholder-count="4">
+              <button class="ec-btn" onClick="{{ it.onClick }}" style="width:100%;background:{{ it.bg }};color:{{ it.fg }};border:2px solid {{ it.border }};border-radius:16px;padding:18px 10px;font-size:16px;font-weight:800">{{ it.text }}</button>
+            </sc-for>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:12px">
+            <sc-for list="{{ mRight }}" as="it" hint-placeholder-count="4">
+              <button class="ec-btn" onClick="{{ it.onClick }}" style="width:100%;background:{{ it.bg }};color:{{ it.fg }};border:2px solid {{ it.border }};border-radius:16px;padding:18px 10px;font-size:16px;font-weight:800">{{ it.text }}</button>
+            </sc-for>
+          </div>
+        </div>
+        <sc-if value="{{ mDone }}" hint-placeholder-val="{{ false }}">
+          <button class="ec-btn" onClick="{{ finishGeneric }}" style="width:100%;background:#59C173;color:#fff;border-radius:20px;padding:17px;font-size:16px;font-weight:800;margin-top:16px;animation:ec-up .3s;box-shadow:0 14px 26px -12px rgba(89,193,115,.7)">🎉 All matched — finish</button>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <!-- TIMED -->
+    <sc-if value="{{ isTimed }}" hint-placeholder-val="{{ false }}">
+      <div class="ec-scr" style="position:absolute;inset:0;background:var(--bg,#EEF1F7);padding:64px 20px 32px;display:flex;flex-direction:column">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+          <div class="ec-btn" onClick="{{ goLearn }}" style="width:34px;height:34px;border-radius:11px;background:var(--card,#fff);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--muted,#8A8FA3)">✕</div>
+          <div style="flex:1;height:14px;background:var(--track,#EDF0F6);border-radius:8px;overflow:hidden"><div style="width:{{ tPct }};height:100%;background:{{ tBarColor }};border-radius:8px;transition:width 1s linear"></div></div>
+          <span style="font-size:16px;font-weight:800;color:{{ tBarColor }}">⏱ {{ tLeft }}s</span>
+        </div>
+        <div style="text-align:center;font-size:14px;font-weight:800;color:#FFB648;margin-bottom:6px">SCORE {{ tScore }}</div>
+        <div style="flex:1;display:flex;align-items:center;justify-content:center">
+          <div style="background:var(--card,#fff);border-radius:28px;padding:44px 24px;text-align:center;width:100%;box-shadow:0 16px 40px -22px rgba(40,60,110,.5)">
+            <div style="font-size:26px">{{ tEmoji }}</div>
+            <div style="font-size:40px;font-weight:800;color:var(--text,#12172B);margin-top:8px">{{ tWord }}</div>
+            <div style="font-size:16px;color:#4F8EF7;font-weight:700;margin-top:18px">{{ tPrompt }}</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:12px;margin-top:20px">
+          <button class="ec-btn" onClick="{{ tWrong }}" style="flex:1;background:var(--card,#fff);color:#FF6B6B;border:2px solid #FFE0E0;border-radius:20px;padding:17px;font-size:16px;font-weight:800">✕ Skip</button>
+          <button class="ec-btn" onClick="{{ tRight }}" style="flex:1;background:#59C173;color:#fff;border-radius:20px;padding:17px;font-size:16px;font-weight:800;box-shadow:0 14px 26px -12px rgba(89,193,115,.7)">✓ Got it</button>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ADD WORD -->
+    <sc-if value="{{ isAdd }}" hint-placeholder-val="{{ false }}">
+      <div class="ec-scr ec-scroll" style="position:absolute;inset:0;background:var(--bg,#EEF1F7);padding:64px 20px 32px;overflow-y:auto">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:22px">
+          <div class="ec-btn" onClick="{{ goBack }}" style="width:34px;height:34px;border-radius:11px;background:var(--card,#fff);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--muted,#8A8FA3)">‹</div>
+          <span style="font-size:22px;font-weight:800;color:var(--text,#12172B)">{{ addTitle }}</span>
+        </div>
+        <sc-for list="{{ addFields }}" as="f" hint-placeholder-count="4">
+          <div style="margin-bottom:16px">
+            <div style="font-size:13px;font-weight:700;color:var(--muted,#8A8FA3);margin-bottom:7px;padding-left:4px">{{ f.label }}</div>
+            <input value="{{ f.value }}" onInput="{{ f.oninput }}" placeholder="{{ f.ph }}" style="width:100%;background:var(--card,#fff);border:1.5px solid var(--line,rgba(0,0,0,.06));border-radius:16px;padding:16px;font-size:16px;color:var(--text,#12172B);outline:none;font-family:inherit" />
+          </div>
+        </sc-for>
+        <div style="font-size:13px;font-weight:700;color:var(--muted,#8A8FA3);margin:0 0 10px 4px">Category</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:26px">
+          <sc-for list="{{ addCats }}" as="cat" hint-placeholder-count="6">
+            <div class="ec-btn" onClick="{{ cat.onClick }}" style="padding:10px 14px;border-radius:14px;background:{{ cat.tint }};border:2px solid {{ cat.sel }};font-size:13px;font-weight:700;color:var(--text,#12172B)">{{ cat.emoji }} {{ cat.name }}</div>
+          </sc-for>
+        </div>
+        <sc-if value="{{ addError }}" hint-placeholder-val="{{ false }}">
+          <div style="color:#FF6B6B;font-size:13px;font-weight:700;text-align:center;margin-bottom:12px">Renseigne au moins le mot et sa traduction.</div>
+        </sc-if>
+        <button class="ec-btn" onClick="{{ saveWord }}" style="width:100%;background:#4F8EF7;color:#fff;border-radius:20px;padding:17px;font-size:16px;font-weight:800;box-shadow:0 14px 26px -12px rgba(79,142,247,.7)">💾 Save word</button>
+      </div>
+    </sc-if>
+
+    <!-- ADD CATEGORY -->
+    <sc-if value="{{ isAddCat }}" hint-placeholder-val="{{ false }}">
+      <div class="ec-scr ec-scroll" style="position:absolute;inset:0;background:var(--bg,#EEF1F7);padding:64px 20px 32px;overflow-y:auto">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:22px">
+          <div class="ec-btn" onClick="{{ goBack }}" style="width:34px;height:34px;border-radius:11px;background:var(--card,#fff);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--muted,#8A8FA3)">‹</div>
+          <span style="font-size:22px;font-weight:800;color:var(--text,#12172B)">New category</span>
+        </div>
+        <div style="margin-bottom:16px">
+          <div style="font-size:13px;font-weight:700;color:var(--muted,#8A8FA3);margin-bottom:7px;padding-left:4px">Name</div>
+          <input value="{{ newCatName }}" onInput="{{ catNameInput }}" placeholder="e.g. Music" style="width:100%;background:var(--card,#fff);border:1.5px solid var(--line,rgba(0,0,0,.06));border-radius:16px;padding:16px;font-size:16px;color:var(--text,#12172B);outline:none;font-family:inherit" />
+        </div>
+        <div style="margin-bottom:16px">
+          <div style="font-size:13px;font-weight:700;color:var(--muted,#8A8FA3);margin-bottom:7px;padding-left:4px">Emoji</div>
+          <input value="{{ newCatEmoji }}" onInput="{{ catEmojiInput }}" placeholder="🎵" style="width:100%;background:var(--card,#fff);border:1.5px solid var(--line,rgba(0,0,0,.06));border-radius:16px;padding:16px;font-size:16px;color:var(--text,#12172B);outline:none;font-family:inherit" />
+        </div>
+        <div style="font-size:13px;font-weight:700;color:var(--muted,#8A8FA3);margin:0 0 10px 4px">Color</div>
+        <div style="display:flex;gap:12px;margin-bottom:26px">
+          <sc-for list="{{ catColors }}" as="c" hint-placeholder-count="6">
+            <div class="ec-btn" onClick="{{ c.onClick }}" style="width:34px;height:34px;border-radius:50%;background:{{ c.color }};display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;box-shadow:0 4px 10px -3px {{ c.color }}">{{ c.check }}</div>
+          </sc-for>
+        </div>
+        <sc-if value="{{ catError }}" hint-placeholder-val="{{ false }}">
+          <div style="color:#FF6B6B;font-size:13px;font-weight:700;text-align:center;margin-bottom:12px">Choisis un nom de catégorie (non vide et pas déjà utilisé).</div>
+        </sc-if>
+        <button class="ec-btn" onClick="{{ saveCategory }}" style="width:100%;background:#4F8EF7;color:#fff;border-radius:20px;padding:17px;font-size:16px;font-weight:800;box-shadow:0 14px 26px -12px rgba(79,142,247,.7)">💾 Save category</button>
+      </div>
+    </sc-if>
+
+    <!-- SEARCH -->
+    <sc-if value="{{ isSearch }}" hint-placeholder-val="{{ false }}">
+      <div class="ec-scr ec-scroll" style="position:absolute;inset:0;background:var(--bg,#EEF1F7);padding:64px 20px 108px;overflow-y:auto">
+        <div style="font-size:26px;font-weight:800;color:var(--text,#12172B);margin-bottom:16px">Search</div>
+        <div style="display:flex;align-items:center;gap:10px;background:var(--card,#fff);border-radius:16px;padding:14px 16px;margin-bottom:16px;box-shadow:0 6px 18px -12px rgba(40,60,110,.4)">
+          <span style="font-size:17px;color:var(--muted,#8A8FA3)">🔍</span>
+          <input value="{{ searchVal }}" onInput="{{ searchInput }}" placeholder="Search words or translations" style="flex:1;border:none;background:none;font-size:16px;color:var(--text,#12172B);outline:none;font-family:inherit" />
+        </div>
+        <div class="ec-scroll" style="display:flex;gap:8px;overflow-x:auto;margin-bottom:18px">
+          <sc-for list="{{ filters }}" as="f" hint-placeholder-count="4">
+            <div class="ec-btn" onClick="{{ f.onClick }}" style="flex:none;padding:9px 15px;border-radius:20px;font-size:13px;font-weight:700;background:{{ f.bg }};color:{{ f.fg }}">{{ f.label }}</div>
+          </sc-for>
+        </div>
+        <sc-if value="{{ showRecent }}" hint-placeholder-val="{{ true }}">
+          <div>
+            <div style="font-size:14px;font-weight:800;color:var(--text,#12172B);margin-bottom:10px">Recent searches</div>
+            <div style="display:flex;flex-wrap:wrap;gap:8px">
+              <sc-for list="{{ recents }}" as="r" hint-placeholder-count="4">
+                <div class="ec-btn" style="padding:9px 14px;border-radius:14px;background:var(--card,#fff);font-size:13px;font-weight:600;color:var(--muted,#8A8FA3);box-shadow:0 4px 12px -8px rgba(40,60,110,.4)">🕘 {{ r }}</div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+        <sc-for list="{{ searchResults }}" as="w" hint-placeholder-count="0">
+          <div class="ec-btn" onClick="{{ w.onClick }}" style="display:flex;align-items:center;gap:14px;background:var(--card,#fff);border-radius:18px;padding:15px;margin-bottom:10px;box-shadow:0 6px 18px -12px rgba(40,60,110,.4)">
+            <div style="width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px;background:{{ w.tint }}">{{ w.emoji }}</div>
+            <div style="flex:1"><div style="font-size:16px;font-weight:800;color:var(--text,#12172B)">{{ w.en }}</div><div style="font-size:13px;color:var(--muted,#8A8FA3)">{{ w.fr }} · {{ w.cat }}</div></div>
+            <span style="color:var(--muted,#8A8FA3)">›</span>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <!-- IMPORT -->
+    <sc-if value="{{ isImport }}" hint-placeholder-val="{{ false }}">
+      <div class="ec-scr ec-scroll" style="position:absolute;inset:0;background:var(--bg,#EEF1F7);padding:64px 20px 32px;overflow-y:auto">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:22px">
+          <div class="ec-btn" onClick="{{ goSettings }}" style="width:34px;height:34px;border-radius:11px;background:var(--card,#fff);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--muted,#8A8FA3)">‹</div>
+          <span style="font-size:22px;font-weight:800;color:var(--text,#12172B)">Import</span>
+        </div>
+        <div style="display:flex;gap:12px;margin-bottom:20px">
+          <div class="ec-btn" onClick="{{ setImportCsv }}" style="flex:1;background:{{ impCsvBg }};border:2px solid {{ impCsvBorder }};border-radius:20px;padding:20px;text-align:center"><div style="font-size:30px">📄</div><div style="font-size:15px;font-weight:800;color:var(--text,#12172B);margin-top:8px">CSV file</div></div>
+          <div class="ec-btn" onClick="{{ setImportPaste }}" style="flex:1;background:{{ impPasteBg }};border:2px solid {{ impPasteBorder }};border-radius:20px;padding:20px;text-align:center"><div style="font-size:30px">📋</div><div style="font-size:15px;font-weight:800;color:var(--text,#12172B);margin-top:8px">Paste text</div></div>
+        </div>
+        <div style="background:var(--card,#fff);border-radius:18px;padding:16px;margin-bottom:18px;box-shadow:0 6px 18px -12px rgba(40,60,110,.4)">
+          <div style="font-size:13px;font-weight:800;color:var(--text,#12172B);margin-bottom:8px">Expected format</div>
+          <div style="font-family:ui-monospace,Menlo,monospace;font-size:12.5px;color:var(--muted,#8A8FA3);line-height:1.7;background:var(--track,#EDF0F6);border-radius:12px;padding:12px">word, translation, category<br/>apple, pomme, Food<br/>airport, aéroport, Travel</div>
+          <div style="font-size:12px;color:var(--muted,#8A8FA3);margin-top:10px;line-height:1.5">One word per line · comma-separated · category optional. Pronunciation & examples can be added later.</div>
+        </div>
+        <sc-if value="{{ isImportCsv }}" hint-placeholder-val="{{ false }}">
+          <input type="file" accept=".csv,text/csv" onInput="{{ csvFileInput }}" style="width:100%;background:var(--card,#fff);border:1.5px solid var(--line,rgba(0,0,0,.06));border-radius:16px;padding:14px;font-size:13px;color:var(--text,#12172B);font-family:inherit;margin-bottom:12px" />
+        </sc-if>
+        <textarea value="{{ importText }}" onInput="{{ importInput }}" placeholder="apple, pomme, Food" style="width:100%;height:130px;background:var(--card,#fff);border:1.5px solid var(--line,rgba(0,0,0,.06));border-radius:16px;padding:16px;font-size:15px;color:var(--text,#12172B);outline:none;font-family:ui-monospace,Menlo,monospace;resize:none"></textarea>
+        <sc-if value="{{ importMsg }}" hint-placeholder-val="{{ false }}">
+          <div style="color:#FF6B6B;font-size:13px;font-weight:700;text-align:center;margin-top:12px">{{ importMsg }}</div>
+        </sc-if>
+        <button class="ec-btn" onClick="{{ importWords }}" style="width:100%;background:#4F8EF7;color:#fff;border-radius:20px;padding:17px;font-size:16px;font-weight:800;margin-top:16px;box-shadow:0 14px 26px -12px rgba(79,142,247,.7)">⬆️ Import words</button>
+      </div>
+    </sc-if>
+
+    <!-- WORD DETAIL -->
+    <sc-if value="{{ isDetail }}" hint-placeholder-val="{{ false }}">
+      <div class="ec-scr" style="position:absolute;inset:0;background:var(--bg,#EEF1F7);padding:64px 20px 32px;display:flex;flex-direction:column">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:22px">
+          <div class="ec-btn" onClick="{{ detailBack }}" style="width:34px;height:34px;border-radius:11px;background:var(--card,#fff);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--muted,#8A8FA3)">‹</div>
+          <span style="font-size:22px">⭐</span>
+        </div>
+        <div style="background:linear-gradient(160deg,#4F8EF7,#5B7CF9);border-radius:28px;padding:30px;color:#fff;box-shadow:0 20px 44px -22px rgba(79,142,247,.6);margin-bottom:18px">
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;opacity:.9"><span style="font-size:18px">{{ dEmoji }}</span> {{ dCat }}</div>
+          <div style="font-size:46px;font-weight:800;letter-spacing:-1px;margin-top:14px">{{ dWord }}</div>
+          <sc-if value="{{ dHasIpa }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:10px;margin-top:6px"><span style="font-size:18px;opacity:.85">{{ dIpa }}</span><span style="font-size:20px">🔊</span></div></sc-if>
+        </div>
+        <div style="background:var(--card,#fff);border-radius:20px;padding:18px;margin-bottom:14px;box-shadow:0 8px 22px -16px rgba(40,60,110,.4)">
+          <div style="font-size:12px;font-weight:800;color:var(--muted,#8A8FA3);letter-spacing:.5px">TRANSLATION</div>
+          <div style="font-size:24px;font-weight:800;color:var(--text,#12172B);margin-top:4px">{{ dFr }}</div>
+        </div>
+        <sc-if value="{{ dHasEx }}" hint-placeholder-val="{{ false }}">
+        <div style="background:var(--card,#fff);border-radius:20px;padding:18px;box-shadow:0 8px 22px -16px rgba(40,60,110,.4)">
+          <div style="font-size:12px;font-weight:800;color:var(--muted,#8A8FA3);letter-spacing:.5px">EXAMPLE</div>
+          <div lang="en" translate="no" style="font-size:16px;color:var(--text,#12172B);margin-top:6px;line-height:1.5;font-style:italic">"{{ dEx }}"</div>
+        </div>
+        </sc-if>
+        <div style="flex:1"></div>
+        <div style="display:flex;gap:12px">
+          <button class="ec-btn" onClick="{{ editDetail }}" style="flex:1;background:var(--card,#fff);color:#4F8EF7;border:2px solid #DCE8FD;border-radius:18px;padding:16px;font-size:15px;font-weight:800">✏️ Edit</button>
+          <button class="ec-btn" onClick="{{ deleteDetail }}" style="flex:1;background:var(--card,#fff);color:#FF6B6B;border:2px solid #FFE0E0;border-radius:18px;padding:16px;font-size:15px;font-weight:800">🗑 Delete</button>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- MY WORDS -->
+    <sc-if value="{{ isWordlist }}" hint-placeholder-val="{{ false }}">
+      <div class="ec-scr ec-scroll" style="position:absolute;inset:0;background:var(--bg,#EEF1F7);padding:64px 20px 32px;overflow-y:auto">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div class="ec-btn" onClick="{{ goSettings }}" style="width:34px;height:34px;border-radius:11px;background:var(--card,#fff);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--muted,#8A8FA3)">‹</div>
+            <span style="font-size:22px;font-weight:800;color:var(--text,#12172B)">Mes mots</span>
+          </div>
+          <div class="ec-btn" onClick="{{ goAdd }}" style="width:42px;height:42px;border-radius:14px;background:#4F8EF7;color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:600;box-shadow:0 10px 22px -10px rgba(79,142,247,.7)">+</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;background:var(--card,#fff);border-radius:16px;padding:14px 16px;margin-bottom:12px;box-shadow:0 6px 18px -12px rgba(40,60,110,.4)">
+          <span style="font-size:17px;color:var(--muted,#8A8FA3)">🔍</span>
+          <input value="{{ wlQuery }}" onInput="{{ wlInput }}" placeholder="Filtrer mes mots" style="flex:1;border:none;background:none;font-size:16px;color:var(--text,#12172B);outline:none;font-family:inherit" />
+        </div>
+        <div style="font-size:12px;color:var(--muted,#8A8FA3);font-weight:600;margin-bottom:12px;padding-left:4px">{{ wlCount }} mots</div>
+        <sc-for list="{{ wlGroups }}" as="g" hint-placeholder-count="0">
+        <div class="ec-btn" onClick="{{ g.onClick }}" style="display:flex;align-items:center;justify-content:space-between;background:var(--card,#fff);border-radius:14px;padding:12px 16px;margin:10px 0;box-shadow:0 4px 14px -10px rgba(40,60,110,.4)">
+          <span style="font-size:14px;font-weight:800;color:#4F8EF7">{{ g.letter }}</span>
+          <div style="display:flex;align-items:center;gap:10px">
+            <span style="font-size:12px;font-weight:600;color:var(--muted,#8A8FA3)">{{ g.count }}</span>
+            <span style="font-size:12px;color:var(--muted,#8A8FA3);transform:rotate({{ g.arrowRot }});transition:transform .2s;display:inline-block">▸</span>
+          </div>
+        </div>
+        <sc-if value="{{ g.open }}" hint-placeholder-val="{{ false }}">
+        <sc-for list="{{ g.words }}" as="w" hint-placeholder-count="0">
+          <div class="ec-btn" onClick="{{ w.onClick }}" style="display:flex;align-items:center;gap:14px;background:var(--card,#fff);border-radius:18px;padding:15px;margin-bottom:10px;box-shadow:0 6px 18px -12px rgba(40,60,110,.4)">
+            <div style="width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px;background:{{ w.tint }}">{{ w.emoji }}</div>
+            <div style="flex:1"><div style="font-size:16px;font-weight:800;color:var(--text,#12172B)">{{ w.en }}</div><div style="font-size:13px;color:var(--muted,#8A8FA3)">{{ w.fr }} · {{ w.cat }}</div></div>
+            <span style="color:var(--muted,#8A8FA3)">›</span>
+          </div>
+        </sc-for>
+        </sc-if>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <!-- PROFILE -->
+    <sc-if value="{{ isProfile }}" hint-placeholder-val="{{ false }}">
+      <div class="ec-scr ec-scroll" style="position:absolute;inset:0;padding:64px 20px 108px;overflow-y:auto">
+        <div style="font-size:28px;font-weight:800;color:var(--text,#12172B);letter-spacing:-.6px;margin-bottom:18px">Profil</div>
+
+        <div style="background:var(--card,#fff);border-radius:24px;padding:24px 20px;margin-bottom:16px;display:flex;flex-direction:column;align-items:center;box-shadow:0 10px 26px -14px rgba(40,60,110,.4)">
+          <div style="width:88px;height:88px;border-radius:50%;background:linear-gradient(135deg,#4F8EF7,#7A6BF7);display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:800;color:#fff;box-shadow:0 14px 28px -12px rgba(79,142,247,.7)">{{ profileInitial }}</div>
+          <input value="{{ userName }}" onInput="{{ nameInput }}" style="margin-top:14px;text-align:center;font-size:20px;font-weight:800;color:var(--text,#12172B);background:none;border:none;outline:none;font-family:inherit;width:100%" />
+          <div style="font-size:13px;color:var(--muted,#8A8FA3);font-weight:600;margin-top:2px">Level {{ level }} · {{ xp }} XP</div>
+        </div>
+
+        <div style="background:var(--card,#fff);border-radius:22px;padding:18px;margin-bottom:16px;box-shadow:0 8px 22px -14px rgba(40,60,110,.4)">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <span style="font-size:14px;font-weight:800;color:var(--text,#12172B)">Progression du niveau</span>
+            <span style="font-size:12px;font-weight:700;color:#4F8EF7">💎 {{ xp }} XP</span>
+          </div>
+          <div style="height:12px;background:var(--track,#EDF0F6);border-radius:8px;overflow:hidden"><div style="width:{{ xpPct }};height:100%;background:linear-gradient(90deg,#4F8EF7,#7A6BF7);border-radius:8px;transition:width .8s"></div></div>
+          <div style="font-size:11px;color:var(--muted,#8A8FA3);margin-top:8px;font-weight:600">{{ xpLeft }} XP jusqu'au niveau {{ nextLevel }}</div>
+          <div style="display:flex;gap:8px;margin-top:14px"><span style="font-size:24px">🏅</span><span style="font-size:24px">🥈</span><span style="font-size:24px;opacity:.3">🏆</span><span style="font-size:24px;opacity:.3">👑</span></div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+          <div style="background:var(--card,#fff);border-radius:18px;padding:16px;box-shadow:0 8px 22px -14px rgba(40,60,110,.4)"><div style="font-size:24px">🔥</div><div style="font-size:22px;font-weight:800;color:#FFB648;margin-top:6px">{{ streak }}</div><div style="font-size:11px;color:var(--muted,#8A8FA3);font-weight:600">jours de suite</div></div>
+          <div style="background:var(--card,#fff);border-radius:18px;padding:16px;box-shadow:0 8px 22px -14px rgba(40,60,110,.4)"><div style="font-size:24px">📚</div><div style="font-size:22px;font-weight:800;color:#4F8EF7;margin-top:6px">{{ learnedCount }}</div><div style="font-size:11px;color:var(--muted,#8A8FA3);font-weight:600">mots appris</div></div>
+          <div style="background:var(--card,#fff);border-radius:18px;padding:16px;box-shadow:0 8px 22px -14px rgba(40,60,110,.4)"><div style="font-size:24px">🔁</div><div style="font-size:22px;font-weight:800;color:#FF6B6B;margin-top:6px">{{ reviewCount }}</div><div style="font-size:11px;color:var(--muted,#8A8FA3);font-weight:600">à revoir</div></div>
+          <div style="background:var(--card,#fff);border-radius:18px;padding:16px;box-shadow:0 8px 22px -14px rgba(40,60,110,.4)"><div style="font-size:24px">🎯</div><div style="font-size:22px;font-weight:800;color:#59C173;margin-top:6px">{{ successRate }}%</div><div style="font-size:11px;color:var(--muted,#8A8FA3);font-weight:600">réussite</div></div>
+        </div>
+
+        <sc-if value="{{ notResetConfirm }}" hint-placeholder-val="{{ true }}">
+          <button class="ec-btn" onClick="{{ resetProgress }}" style="width:100%;background:var(--card,#fff);color:#FF6B6B;border:2px solid #FFE0E0;border-radius:18px;padding:16px;font-size:15px;font-weight:800">🗑 Réinitialiser ma progression</button>
+        </sc-if>
+        <sc-if value="{{ resetConfirm }}" hint-placeholder-val="{{ false }}">
+          <div style="background:var(--card,#fff);border:2px solid #FFE0E0;border-radius:18px;padding:16px;animation:ec-pop .3s">
+            <div style="font-size:13.5px;font-weight:700;color:var(--text,#12172B);text-align:center;line-height:1.4;margin-bottom:14px">Réinitialiser XP, série et mots appris ?<br/><span style="color:var(--muted,#8A8FA3);font-weight:600">Tes mots sont conservés.</span></div>
+            <div style="display:flex;gap:10px">
+              <button class="ec-btn" onClick="{{ resetCancel }}" style="flex:1;background:var(--track,#EDF0F6);color:var(--text,#12172B);border:none;border-radius:14px;padding:14px;font-size:14px;font-weight:800">Annuler</button>
+              <button class="ec-btn" onClick="{{ resetConfirmYes }}" style="flex:1;background:#FF6B6B;color:#fff;border:none;border-radius:14px;padding:14px;font-size:14px;font-weight:800;box-shadow:0 12px 24px -12px rgba(255,107,107,.7)">Oui, réinitialiser</button>
+            </div>
+          </div>
+        </sc-if>
+        <div style="text-align:center;margin-top:16px;color:var(--muted,#8A8FA3);font-size:12px">English Cards · v1.0</div>
+      </div>
+    </sc-if>
+
+    </div><!-- /screens -->
+
+    <!-- ============ BOTTOM TAB BAR ============ -->
+    <sc-if value="{{ showTabs }}" hint-placeholder-val="{{ true }}">
+      <div style="position:absolute;bottom:0;left:0;right:0;height:88px;background:var(--nav,rgba(255,255,255,.82));backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--line,rgba(0,0,0,.06));display:flex;justify-content:space-around;align-items:flex-start;padding-top:12px;z-index:40">
+        <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="5">
+          <div class="ec-btn" onClick="{{ t.onClick }}" style="display:flex;flex-direction:column;align-items:center;gap:4px;width:60px">
+            <span style="font-size:23px;filter:{{ t.filter }};transition:transform .15s;transform:scale({{ t.scale }})">{{ t.icon }}</span>
+            <span style="font-size:10px;font-weight:700;color:{{ t.color }}">{{ t.label }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <!-- ============ CELEBRATION OVERLAY ============ -->
+    <sc-if value="{{ showCeleb }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;inset:0;z-index:80;background:rgba(15,22,45,.55);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:28px;animation:ec-in .3s">
+        <sc-for list="{{ confetti }}" as="c" hint-placeholder-count="0">
+          <div style="position:absolute;top:0;left:{{ c.left }};width:10px;height:14px;background:{{ c.color }};border-radius:2px;animation:ec-conf {{ c.dur }} ease-in {{ c.delay }} forwards"></div>
+        </sc-for>
+        <div style="background:var(--card,#fff);border-radius:30px;padding:32px 26px;text-align:center;width:100%;max-width:320px;box-shadow:0 30px 60px -20px rgba(0,0,0,.5);animation:ec-pop .45s">
+          <div style="font-size:64px">🎉</div>
+          <div style="font-size:24px;font-weight:800;color:var(--text,#12172B);margin-top:8px">Session complete!</div>
+          <div style="font-size:14px;color:var(--muted,#8A8FA3);margin-top:6px">{{ celebSub }}</div>
+          <div style="display:flex;gap:12px;margin:22px 0">
+            <div style="flex:1;background:var(--track,#EDF0F6);border-radius:16px;padding:14px"><div style="font-size:22px;font-weight:800;color:#59C173">{{ celebScore }}</div><div style="font-size:11px;color:var(--muted,#8A8FA3);font-weight:600">Correct</div></div>
+            <div style="flex:1;background:var(--track,#EDF0F6);border-radius:16px;padding:14px"><div style="font-size:22px;font-weight:800;color:#4F8EF7">+{{ celebXp }}</div><div style="font-size:11px;color:var(--muted,#8A8FA3);font-weight:600">XP earned</div></div>
+          </div>
+          <button class="ec-btn" onClick="{{ finishDone }}" style="width:100%;background:#4F8EF7;color:#fff;border-radius:18px;padding:16px;font-size:16px;font-weight:800;box-shadow:0 14px 26px -12px rgba(79,142,247,.7)">Continue</button>
+        </div>
+      </div>
+    </sc-if>
+
+  </div>
+</div>
+</template>
+
+<div id="app"></div>
+
+<script>
+/* ---- Runtime : ce que l'outil de streaming (<x-dc>) fournissait ----
+   Moteur de template pour <sc-if>/<sc-for>/{{ holes }}, setState, et un
+   morph DOM qui met à jour en place (préserve flip, transitions, focus). */
+const SVGNS = 'http://www.w3.org/2000/svg';
+const H = { click:{}, input:{} };
+let hid = 0;
+
+class DCLogic {
+  setState(u){
+    const p = (typeof u === 'function') ? u(this.state) : u;
+    if(p) Object.assign(this.state, p);
+    App.render();
+  }
+}
+
+function evalExpr(e, scope){
+  e = e.trim();
+  if(e === 'true') return true;
+  if(e === 'false') return false;
+  const parts = e.split('.');
+  let v = scope[parts[0]];
+  for(let i=1; i<parts.length && v!=null; i++) v = v[parts[i]];
+  return v;
+}
+function fill(str, scope){
+  return str.replace(/\{\{([^}]*)\}\}/g, (_, e) => {
+    const v = evalExpr(e, scope);
+    return v == null ? '' : String(v);
+  });
+}
+function attrExpr(node, name){ return node.getAttribute(name).replace(/[{}]/g,''); }
+
+function buildChildren(node, scope, parent, ns){
+  for(const ch of node.childNodes) buildNode(ch, scope, parent, ns);
+}
+function buildNode(node, scope, parent, ns){
+  if(node.nodeType === 3){ parent.appendChild(document.createTextNode(fill(node.nodeValue, scope))); return; }
+  if(node.nodeType !== 1) return; // skip comments
+  const tag = node.tagName.toLowerCase();
+  if(tag === 'sc-if'){
+    if(evalExpr(attrExpr(node,'value'), scope)) buildChildren(node, scope, parent, ns);
+    return;
+  }
+  if(tag === 'sc-for'){
+    const list = evalExpr(attrExpr(node,'list'), scope) || [];
+    const as = node.getAttribute('as');
+    for(const item of list){ const sub = Object.create(scope); sub[as] = item; buildChildren(node, sub, parent, ns); }
+    return;
+  }
+  const isSvg = ns || tag === 'svg';
+  const el = isSvg ? document.createElementNS(SVGNS, tag) : document.createElement(tag);
+  for(const at of node.attributes){
+    const n = at.name;
+    if(n.startsWith('hint-')) continue;
+    if(n === 'onclick'){ const id='h'+(hid++); H.click[id]=evalExpr(at.value.replace(/[{}]/g,''), scope); el.setAttribute('data-onclick', id); continue; }
+    if(n === 'oninput'){ const id='h'+(hid++); H.input[id]=evalExpr(at.value.replace(/[{}]/g,''), scope); el.setAttribute('data-oninput', id); continue; }
+    el.setAttribute(n, fill(at.value, scope));
+  }
+  buildChildren(node, scope, el, isSvg);
+  if((tag === 'input' || tag === 'textarea') && el.hasAttribute('value')) el.value = el.getAttribute('value');
+  parent.appendChild(el);
+}
+
+/* Rend `a` (live) identique à `b` (neuf) en réutilisant les noeuds existants. */
+function morph(a, b){
+  if(a.nodeType !== b.nodeType
+     || (a.nodeType === 1 && a.tagName !== b.tagName)
+     || (a.nodeType === 1 && a.getAttribute('data-screen') !== b.getAttribute('data-screen'))
+     || (a.nodeType === 1 && a.getAttribute('data-key') !== b.getAttribute('data-key'))){
+    a.replaceWith(b); return; // écran/clé différents -> nouveau noeud (pas d'anim de transition depuis l'ancien état)
+  }
+  if(a.nodeType === 3){ if(a.nodeValue !== b.nodeValue) a.nodeValue = b.nodeValue; return; }
+  if(a.nodeType !== 1) return;
+  const aAttrs = a.attributes;
+  for(let i=aAttrs.length-1; i>=0; i--){ if(!b.hasAttribute(aAttrs[i].name)) a.removeAttribute(aAttrs[i].name); }
+  for(const at of b.attributes){ if(a.getAttribute(at.name) !== at.value) a.setAttribute(at.name, at.value); }
+  const tag = a.tagName.toLowerCase();
+  if((tag === 'input' || tag === 'textarea') && b.hasAttribute('value')){
+    const nv = b.getAttribute('value');
+    if(a.value !== nv) a.value = nv; // ne touche pas au caret quand la valeur est inchangée
+  }
+  const ac = a.childNodes, bc = Array.from(b.childNodes);
+  for(let i=0; i<bc.length; i++){ if(ac[i]) morph(ac[i], bc[i]); else a.appendChild(bc[i]); }
+  while(ac.length > bc.length) a.removeChild(a.lastChild);
+}
+
+const App = {
+  tpl: null, comp: null,
+  render(){
+    H.click = {}; H.input = {}; hid = 0;
+    const vals = this.comp.renderVals();
+    const frag = document.createElement('div');
+    buildChildren(this.tpl.content, vals, frag, false);
+    const scr = frag.querySelector('.ec-scr');
+    if(scr) scr.setAttribute('data-screen', this.comp.state.screen);
+    const app = document.getElementById('app');
+    if(!app.firstChild){ while(frag.firstChild) app.appendChild(frag.firstChild); return; }
+    const ac = app.childNodes, bc = Array.from(frag.childNodes);
+    for(let i=0; i<bc.length; i++){ if(ac[i]) morph(ac[i], bc[i]); else app.appendChild(bc[i]); }
+    while(ac.length > bc.length) app.removeChild(app.lastChild);
+  }
+};
+</script>
+
+<script>
+/* ---- Logique applicative : classe Component reprise telle quelle du prototype ---- */
+class Component extends DCLogic {
+  state = {
+    screen: 'home', tab: 'home', dark: false, accent: '#4F8EF7', prev: 'home',
+    // session
+    sIdx: 0, flipped: false, dirs: [], sKnown: 0, mode: 'classic',
+    // quiz
+    qIdx: 0, qSel: null, qCorrect: 0, qData: [],
+    // write
+    wIdx: 0, wVal: '', wChecked: false, wCorrect: 0,
+    // matching
+    mLeft: [], mRight: [], mSel: null, mMatched: [],
+    // timed
+    tLeft: 30, tScore: 0, tIdx: 0,
+    // misc
+    dirMode: 'random', sessionWords: [],
+    searchVal: '', filter: 'all', importType: 'paste', detail: null, detailPrev: 'categories',
+    addEn: '', addFr: '', addIpa: '', addEx: '', addCat: null, addError: false, editId: null,
+    importText: '', importMsg: '',
+    newCatName: '', newCatEmoji: '📁', newCatColor: '#4F8EF7', catError: false,
+    wlQuery: '', wlOpen: {}, resetConfirm: false,
+    nameVal: (localStorage.getItem('ec_name') || 'Alex'),
+    celeb: null,
+  };
+
+  CATS = [
+    {name:'Food', emoji:'🍎', color:'#FF7A7A', tint:'rgba(255,122,122,.15)', prog:.6},
+    {name:'Travel', emoji:'✈️', color:'#4F8EF7', tint:'rgba(79,142,247,.15)', prog:.8},
+    {name:'Animals', emoji:'🐾', color:'#FFB648', tint:'rgba(255,182,72,.18)', prog:.4},
+    {name:'Verbs', emoji:'⚡', color:'#59C173', tint:'rgba(89,193,115,.16)', prog:.5},
+    {name:'Adjectives', emoji:'🎨', color:'#F77AC4', tint:'rgba(247,122,196,.15)', prog:.5},
+    {name:'Body', emoji:'💪', color:'#FF6B6B', tint:'rgba(255,107,107,.14)', prog:.35},
+    {name:'House', emoji:'🚿', color:'#4F8EF7', tint:'rgba(79,142,247,.15)', prog:.45},
+    {name:'Fish', emoji:'🐟', color:'#59C173', tint:'rgba(89,193,115,.16)', prog:.3},
+    {name:'Adverbs', emoji:'⏱️', color:'#7A6BF7', tint:'rgba(122,107,247,.15)', prog:.4},
+    {name:'Connectors', emoji:'🔗', color:'#FFB648', tint:'rgba(255,182,72,.18)', prog:.3},
+    {name:'Expressions', emoji:'💬', color:'#F77AC4', tint:'rgba(247,122,196,.15)', prog:.55},
+    {name:'Questions', emoji:'❓', color:'#4F8EF7', tint:'rgba(79,142,247,.15)', prog:.5},
+    {name:'Business', emoji:'💼', color:'#7A6BF7', tint:'rgba(122,107,247,.15)', prog:.3},
+    {name:'Idioms', emoji:'🎭', color:'#7A6BF7', tint:'rgba(122,107,247,.15)', prog:.25},
+  ];
+
+  LS_C = 'ec_cats_v1';
+  customCats = this.loadCustomCats();
+  loadCustomCats(){ try { const j = JSON.parse(localStorage.getItem(this.LS_C)); if (Array.isArray(j)) return j; } catch(e){} return []; }
+  saveCustomCats(){ localStorage.setItem(this.LS_C, JSON.stringify(this.customCats)); }
+  get allCats(){ return this.CATS.concat(this.customCats); }
+  get META(){ return Object.fromEntries(this.allCats.map(c => [c.name, c])); }
+
+  RAW = [
+    // Food
+    {en:'Apple', fr:'Pomme', ipa:'/ˈæpəl/', ex:'I eat an apple every morning.', cat:'Food'},
+    {en:'Bread', fr:'Pain', ipa:'/brɛd/', ex:'She buys fresh bread daily.', cat:'Food'},
+    // Travel
+    {en:'Airport', fr:'Aéroport', ipa:'/ˈeəpɔːt/', ex:'We arrived at the airport early.', cat:'Travel'},
+    {en:'Beach', fr:'Plage', ipa:'/biːtʃ/', ex:'The beach was crowded today.', cat:'Travel'},
+    // Animals
+    {en:'Dog', fr:'Chien', ipa:'/dɒɡ/', ex:'The dog runs in the park.', cat:'Animals'},
+    // Business
+    {en:'Meeting', fr:'Réunion', ipa:'/ˈmiːtɪŋ/', ex:'The meeting starts at nine.', cat:'Business'},
+    // Verbs
+    {en:'Run', fr:'Courir', ipa:'/rʌn/', ex:'I run every weekend.', cat:'Verbs'},
+    {en:'To hate', fr:'Détester', ipa:'', ex:'I hate waking up early.', cat:'Verbs'},
+    {en:'To prefer', fr:'Préférer', ipa:'', ex:'', cat:'Verbs'},
+    {en:'To miss', fr:'Manquer', ipa:'', ex:'', cat:'Verbs'},
+    {en:'To enjoy', fr:'Apprécier', ipa:'', ex:'', cat:'Verbs'},
+    {en:'To worry', fr:"S'inquiéter", ipa:'', ex:'', cat:'Verbs'},
+    {en:'To go away', fr:'Partir', ipa:'', ex:'', cat:'Verbs'},
+    {en:'To put away', fr:'Ranger', ipa:'', ex:'', cat:'Verbs'},
+    {en:'To give back', fr:'Rendre', ipa:'', ex:'', cat:'Verbs'},
+    {en:'To go back', fr:'Retourner', ipa:'', ex:'', cat:'Verbs'},
+    {en:'To bring back', fr:'Ramener', ipa:'', ex:'', cat:'Verbs'},
+    {en:'To come in', fr:'Entrer', ipa:'', ex:'', cat:'Verbs'},
+    {en:'To come up', fr:'Surgir', ipa:'', ex:'', cat:'Verbs'},
+    {en:'To come out', fr:'Sortir', ipa:'', ex:'', cat:'Verbs'},
+    {en:'To come back', fr:'Revenir', ipa:'', ex:'', cat:'Verbs'},
+    {en:'To come along', fr:'Accompagner', ipa:'', ex:'', cat:'Verbs'},
+    {en:'To come down', fr:'Descendre', ipa:'', ex:'', cat:'Verbs'},
+    {en:'To come across', fr:'Rencontrer par hasard', ipa:'', ex:'', cat:'Verbs'},
+    // Adjectives (opposites)
+    {en:'Beautiful', fr:'Beau', ipa:'/ˈbjuːtɪfl/', ex:'What a beautiful sunset!', cat:'Adjectives'},
+    {en:'Safe', fr:'Sûr', ipa:'', ex:'', cat:'Adjectives'},
+    {en:'Dangerous', fr:'Dangereux', ipa:'', ex:'', cat:'Adjectives'},
+    {en:'Alive', fr:'Vivant', ipa:'', ex:'', cat:'Adjectives'},
+    {en:'Dead', fr:'Mort', ipa:'', ex:'', cat:'Adjectives'},
+    {en:'Heavy', fr:'Lourd', ipa:'', ex:'', cat:'Adjectives'},
+    {en:'Light', fr:'Léger', ipa:'', ex:'', cat:'Adjectives'},
+    {en:'Wet', fr:'Mouillé', ipa:'', ex:'', cat:'Adjectives'},
+    {en:'Dry', fr:'Sec', ipa:'', ex:'', cat:'Adjectives'},
+    {en:'Busy', fr:'Occupé', ipa:'', ex:'', cat:'Adjectives'},
+    {en:'Free', fr:'Libre', ipa:'', ex:'', cat:'Adjectives'},
+    {en:'Noisy', fr:'Bruyant', ipa:'', ex:'', cat:'Adjectives'},
+    {en:'Silent', fr:'Silencieux', ipa:'', ex:'', cat:'Adjectives'},
+    {en:'Happy', fr:'Heureux', ipa:'', ex:'', cat:'Adjectives'},
+    {en:'Angry', fr:'En colère', ipa:'', ex:'', cat:'Adjectives'},
+    {en:'Asleep', fr:'Endormi', ipa:'', ex:'', cat:'Adjectives'},
+    {en:'Awake', fr:'Éveillé', ipa:'', ex:'', cat:'Adjectives'},
+    // Body
+    {en:'Shoulder', fr:'Épaule', ipa:'', ex:'', cat:'Body'},
+    {en:'Mouth', fr:'Bouche', ipa:'', ex:'', cat:'Body'},
+    {en:'Hair', fr:'Cheveux', ipa:'', ex:'', cat:'Body'},
+    {en:'Hand', fr:'Main', ipa:'', ex:'', cat:'Body'},
+    {en:'Ear', fr:'Oreille', ipa:'', ex:'', cat:'Body'},
+    {en:'Head', fr:'Tête', ipa:'', ex:'', cat:'Body'},
+    {en:'Neck', fr:'Cou', ipa:'', ex:'', cat:'Body'},
+    {en:'Nose', fr:'Nez', ipa:'', ex:'', cat:'Body'},
+    {en:'Arm', fr:'Bras', ipa:'', ex:'', cat:'Body'},
+    {en:'Eye', fr:'Œil', ipa:'/aɪ/', ex:'She has one eye closed.', cat:'Body'},
+    {en:'Bone', fr:'Os', ipa:'', ex:'', cat:'Body'},
+    {en:'Back', fr:'Dos', ipa:'', ex:'', cat:'Body'},
+    {en:'Foot', fr:'Pied', ipa:'', ex:'', cat:'Body'},
+    {en:'Toe', fr:'Orteil', ipa:'', ex:'', cat:'Body'},
+    {en:'Skin', fr:'Peau', ipa:'', ex:'', cat:'Body'},
+    {en:'Leg', fr:'Jambe', ipa:'', ex:'', cat:'Body'},
+    {en:'Finger', fr:'Doigt', ipa:'', ex:'', cat:'Body'},
+    {en:'Knee', fr:'Genou', ipa:'', ex:'', cat:'Body'},
+    {en:'Chest', fr:'Poitrine', ipa:'', ex:'', cat:'Body'},
+    {en:'Stomach', fr:'Ventre', ipa:'', ex:'', cat:'Body'},
+    // House
+    {en:'Sink', fr:'Lavabo', ipa:'', ex:'', cat:'House'},
+    {en:'Mirror', fr:'Miroir', ipa:'', ex:'', cat:'House'},
+    {en:'Toilet', fr:'Toilettes', ipa:'', ex:'', cat:'House'},
+    {en:'Shower', fr:'Douche', ipa:'', ex:'', cat:'House'},
+    {en:'Bathtub', fr:'Baignoire', ipa:'', ex:'', cat:'House'},
+    // Fish
+    {en:'Salmon', fr:'Saumon', ipa:'/ˈsæmən/', ex:'Salmon is rich in omega-3.', cat:'Fish'},
+    {en:'Cod', fr:'Morue', ipa:'', ex:'', cat:'Fish'},
+    {en:'Trout', fr:'Truite', ipa:'', ex:'', cat:'Fish'},
+    {en:'Swordfish', fr:'Espadon', ipa:'', ex:'', cat:'Fish'},
+    {en:'Sardine', fr:'Sardine', ipa:'', ex:'', cat:'Fish'},
+    {en:'Tuna', fr:'Thon', ipa:'', ex:'', cat:'Fish'},
+    {en:'Mackerel', fr:'Maquereau', ipa:'', ex:'', cat:'Fish'},
+    {en:'Carp', fr:'Carpe', ipa:'', ex:'', cat:'Fish'},
+    {en:'Herring', fr:'Hareng', ipa:'', ex:'', cat:'Fish'},
+    {en:'Pike', fr:'Brochet', ipa:'', ex:'', cat:'Fish'},
+    {en:'Catfish', fr:'Poisson-chat', ipa:'', ex:'', cat:'Fish'},
+    {en:'Bass', fr:'Bar', ipa:'', ex:'', cat:'Fish'},
+    // Adverbs
+    {en:'Fast', fr:'Vite', ipa:'', ex:'', cat:'Adverbs'},
+    {en:'Badly', fr:'Mal', ipa:'', ex:'', cat:'Adverbs'},
+    {en:'Easily', fr:'Facilement', ipa:'', ex:'', cat:'Adverbs'},
+    {en:'Slowly', fr:'Lentement', ipa:'', ex:'', cat:'Adverbs'},
+    {en:'Quickly', fr:'Rapidement', ipa:'', ex:'', cat:'Adverbs'},
+    {en:'Always', fr:'Toujours', ipa:'', ex:'', cat:'Adverbs'},
+    {en:'Sometimes', fr:'Parfois', ipa:'', ex:'', cat:'Adverbs'},
+    {en:'Often', fr:'Souvent', ipa:'', ex:'', cat:'Adverbs'},
+    {en:'Rarely', fr:'Rarement', ipa:'', ex:'', cat:'Adverbs'},
+    {en:'Never', fr:'Jamais', ipa:'', ex:'', cat:'Adverbs'},
+    {en:'Now', fr:'Maintenant', ipa:'', ex:'', cat:'Adverbs'},
+    {en:'Already', fr:'Déjà', ipa:'', ex:'', cat:'Adverbs'},
+    {en:'Immediately', fr:'Tout de suite', ipa:'', ex:'', cat:'Adverbs'},
+    {en:'Really', fr:'Vraiment', ipa:'', ex:'', cat:'Adverbs'},
+    {en:'Probably', fr:'Probablement', ipa:'', ex:'', cat:'Adverbs'},
+    {en:'Maybe', fr:'Peut-être', ipa:'', ex:'', cat:'Adverbs'},
+    {en:'Here', fr:'Ici', ipa:'', ex:'', cat:'Adverbs'},
+    {en:'There', fr:'Là', ipa:'', ex:'', cat:'Adverbs'},
+    {en:'Everywhere', fr:'Partout', ipa:'', ex:'', cat:'Adverbs'},
+    {en:'Somewhere', fr:'Quelque part', ipa:'', ex:'', cat:'Adverbs'},
+    {en:'Nowhere', fr:'Nulle part', ipa:'', ex:'', cat:'Adverbs'},
+    {en:'Behind', fr:'Derrière', ipa:'', ex:'', cat:'Adverbs'},
+    {en:'Inside', fr:'Dedans', ipa:'', ex:'', cat:'Adverbs'},
+    {en:'Outside', fr:'Dehors', ipa:'', ex:'', cat:'Adverbs'},
+    {en:'Far', fr:'Loin', ipa:'', ex:'', cat:'Adverbs'},
+    {en:'Near', fr:'Près', ipa:'', ex:'', cat:'Adverbs'},
+    {en:'Around', fr:'Autour', ipa:'', ex:'', cat:'Adverbs'},
+    {en:'Between', fr:'Entre', ipa:'', ex:'', cat:'Adverbs'},
+    {en:'Every day', fr:'Tous les jours', ipa:'', ex:'', cat:'Adverbs'},
+    {en:'Once a week', fr:'Une fois par semaine', ipa:'', ex:'', cat:'Adverbs'},
+    // Connectors
+    {en:'Before', fr:'Avant', ipa:'', ex:'', cat:'Connectors'},
+    {en:'After', fr:'Après', ipa:'', ex:'', cat:'Connectors'},
+    {en:'Then', fr:'Ensuite', ipa:'', ex:'', cat:'Connectors'},
+    {en:'However', fr:'Cependant', ipa:'', ex:'', cat:'Connectors'},
+    {en:'Also', fr:'Aussi', ipa:'', ex:'', cat:'Connectors'},
+    {en:'Because', fr:'Parce que', ipa:'', ex:'', cat:'Connectors'},
+    {en:'But', fr:'Mais', ipa:'', ex:'', cat:'Connectors'},
+    {en:'And', fr:'Et', ipa:'', ex:'', cat:'Connectors'},
+    {en:'When', fr:'Quand', ipa:'', ex:'', cat:'Connectors'},
+    {en:'While', fr:'Pendant que', ipa:'', ex:'', cat:'Connectors'},
+    {en:'Although', fr:'Bien que', ipa:'', ex:'', cat:'Connectors'},
+    {en:'Unless', fr:'À moins que', ipa:'', ex:'', cat:'Connectors'},
+    {en:'Since', fr:'Depuis', ipa:'', ex:'', cat:'Connectors'},
+    {en:'Finally', fr:'Enfin', ipa:'', ex:'', cat:'Connectors'},
+    {en:'Actually', fr:'En réalité', ipa:'', ex:'', cat:'Connectors'},
+    {en:'In fact', fr:'En fait', ipa:'', ex:'', cat:'Connectors'},
+    {en:'For example', fr:'Par exemple', ipa:'', ex:'', cat:'Connectors'},
+    {en:'In addition', fr:'En plus', ipa:'', ex:'', cat:'Connectors'},
+    {en:'As a result', fr:'En conséquence', ipa:'', ex:'', cat:'Connectors'},
+    {en:'Otherwise', fr:'Sinon', ipa:'', ex:'', cat:'Connectors'},
+    {en:'Whereas', fr:'Alors que', ipa:'', ex:'', cat:'Connectors'},
+    {en:'Indeed', fr:'En effet', ipa:'', ex:'', cat:'Connectors'},
+    {en:'Despite', fr:'Malgré', ipa:'', ex:'', cat:'Connectors'},
+    {en:'Thanks to', fr:'Grâce à', ipa:'', ex:'', cat:'Connectors'},
+    {en:'Because of', fr:'À cause de', ipa:'', ex:'', cat:'Connectors'},
+    {en:'As soon as', fr:'Dès que', ipa:'', ex:'', cat:'Connectors'},
+    {en:'Therefore', fr:'Par conséquent', ipa:'', ex:'', cat:'Connectors'},
+    {en:'Even if', fr:'Même si', ipa:'', ex:'', cat:'Connectors'},
+    // Expressions
+    {en:"I don't know", fr:'Je ne sais pas', ipa:'', ex:'', cat:'Expressions'},
+    {en:'Thank you', fr:'Merci', ipa:'', ex:'', cat:'Expressions'},
+    {en:"You're welcome", fr:'De rien', ipa:'', ex:'', cat:'Expressions'},
+    {en:'No problem', fr:'Pas de souci', ipa:'', ex:'', cat:'Expressions'},
+    {en:"That's right", fr:'C\u2019est exact', ipa:'', ex:'', cat:'Expressions'},
+    {en:"That's wrong", fr:'C\u2019est faux', ipa:'', ex:'', cat:'Expressions'},
+    {en:"I'm sorry", fr:'Désolé', ipa:'', ex:'', cat:'Expressions'},
+    {en:"I'm late", fr:'Je suis en retard', ipa:'', ex:'', cat:'Expressions'},
+    {en:"Let's go!", fr:'On y va !', ipa:'', ex:'', cat:'Expressions'},
+    {en:'Just kidding!', fr:'Je plaisante !', ipa:'', ex:'', cat:'Expressions'},
+    {en:"I'm busy", fr:'Je suis occupé', ipa:'', ex:'', cat:'Expressions'},
+    {en:'Be quiet', fr:'Tais-toi', ipa:'', ex:'', cat:'Expressions'},
+    {en:"Don't worry", fr:'T\u2019inquiète pas', ipa:'', ex:'', cat:'Expressions'},
+    {en:'Wait a second', fr:'Attends une seconde', ipa:'', ex:'', cat:'Expressions'},
+    {en:"I'm coming!", fr:'J\u2019arrive !', ipa:'', ex:'', cat:'Expressions'},
+    {en:'For sure!', fr:'C\u2019est sûr !', ipa:'', ex:'', cat:'Expressions'},
+    {en:'Totally!', fr:'Carrément !', ipa:'', ex:'', cat:'Expressions'},
+    {en:'Exactly!', fr:'Exactement !', ipa:'', ex:'', cat:'Expressions'},
+    {en:'Sounds good', fr:'Ça me va', ipa:'', ex:'', cat:'Expressions'},
+    {en:'I agree', fr:"Je suis d'accord", ipa:'', ex:'', cat:'Expressions'},
+    {en:'Absolutely!', fr:'Absolument !', ipa:'', ex:'', cat:'Expressions'},
+    {en:'Hi!', fr:'Salut !', ipa:'', ex:'', cat:'Expressions'},
+    {en:'How are you?', fr:'Comment ça va ?', ipa:'', ex:'', cat:'Expressions'},
+    {en:'See you!', fr:'À bientôt !', ipa:'', ex:'', cat:'Expressions'},
+    {en:'Take care!', fr:'Prends soin de toi !', ipa:'', ex:'', cat:'Expressions'},
+    {en:'Sweet dreams', fr:'Fais de beaux rêves', ipa:'', ex:'', cat:'Expressions'},
+    {en:'Have a good day!', fr:'Passe une bonne journée !', ipa:'', ex:'', cat:'Expressions'},
+    {en:'My bad', fr:'Ma faute', ipa:'', ex:'', cat:'Expressions'},
+    {en:'Excuse me', fr:'Excuse-moi', ipa:'', ex:'', cat:'Expressions'},
+    {en:'Nice to meet you', fr:'Ravi de te rencontrer', ipa:'', ex:'', cat:'Expressions'},
+    // Questions
+    {en:'Is it raining?', fr:'Il pleut ?', ipa:'', ex:'', cat:'Questions'},
+    {en:'Are you tired?', fr:'Tu es fatigué ?', ipa:'', ex:'', cat:'Questions'},
+    {en:'Do you sleep well?', fr:'Tu dors bien ?', ipa:'', ex:'', cat:'Questions'},
+    {en:'Do you get up early?', fr:'Tu te lèves tôt ?', ipa:'', ex:'', cat:'Questions'},
+    {en:'Where do you work?', fr:'Tu travailles où ?', ipa:'', ex:'', cat:'Questions'},
+    {en:'Do you drink coffee?', fr:'Tu bois du café ?', ipa:'', ex:'', cat:'Questions'},
+    {en:'Do you watch TV?', fr:'Tu regardes la télé ?', ipa:'', ex:'', cat:'Questions'},
+    {en:"What's for dinner?", fr:'On mange quoi ce soir ?', ipa:'', ex:'', cat:'Questions'},
+    // Idioms
+    {en:"I'm over the moon", fr:'Être aux anges', ipa:'', ex:'', cat:'Idioms'},
+    {en:'Under the weather', fr:'Ne pas se sentir bien', ipa:'', ex:'', cat:'Idioms'},
+    {en:'Time flies', fr:'Le temps passe vite', ipa:'', ex:'', cat:'Idioms'},
+    {en:'Hit the road', fr:'Prendre la route', ipa:'', ex:'', cat:'Idioms'},
+    {en:'Cut to the chase', fr:'Aller droit au but', ipa:'', ex:'', cat:'Idioms'},
+    {en:'Out of the blue', fr:'De façon inattendue', ipa:'', ex:'', cat:'Idioms'},
+    {en:'Keep your chin up', fr:'Garder la tête haute', ipa:'', ex:'', cat:'Idioms'},
+    {en:'Hit the sack', fr:'Aller au lit', ipa:'', ex:'', cat:'Idioms'},
+    {en:'On cloud nine', fr:'Être au septième ciel', ipa:'', ex:'', cat:'Idioms'},
+    {en:'In hot water', fr:'Être dans les ennuis', ipa:'', ex:'', cat:'Idioms'},
+    {en:'See red', fr:'Voir rouge', ipa:'', ex:'', cat:'Idioms'},
+    {en:'Feel blue', fr:'Avoir le cafard', ipa:'', ex:'', cat:'Idioms'},
+    {en:'Be all ears', fr:'Être tout ouïe', ipa:'', ex:'', cat:'Idioms'},
+    {en:'Blow off steam', fr:'Se défouler', ipa:'', ex:'', cat:'Idioms'},
+    {en:'Go bananas', fr:'Péter les plombs', ipa:'', ex:'', cat:'Idioms'},
+    {en:'Be in a pickle', fr:'Être dans le pétrin', ipa:'', ex:'', cat:'Idioms'},
+    {en:'Keep your cool', fr:'Garder son calme', ipa:'', ex:'', cat:'Idioms'},
+  ];
+
+  LS_W = 'ec_words_v1';
+  LS_S = 'ec_stats_v1';
+  dailyGoal = 20;
+  words = this.loadWords();
+  stats = this.loadStats();
+
+  enrich(arr){ return arr.map(w => ({ ...w, emoji: (this.META[w.cat]||{}).emoji || '📘', color: (this.META[w.cat]||{}).color || '#4F8EF7' })); }
+  loadWords(){
+    try { const j = JSON.parse(localStorage.getItem(this.LS_W)); if (Array.isArray(j) && j.length) return this.enrich(j); } catch(e){}
+    const seed = this.RAW.map((w,i) => ({ ...w, id:'seed'+i, learned:false, miss:false, favorite:false }));
+    const enriched = this.enrich(seed); this.saveWords(enriched); return enriched;
+  }
+  saveWords(list){ const arr = (list || this.words).map(({emoji,color,...w}) => w); localStorage.setItem(this.LS_W, JSON.stringify(arr)); }
+  loadStats(){
+    try { const j = JSON.parse(localStorage.getItem(this.LS_S)); if (j) return j; } catch(e){}
+    return { xp:0, streak:0, lastDay:null, day:null, dailyDone:0, totalAnswered:0, totalCorrect:0, week:{} };
+  }
+  saveStats(){ localStorage.setItem(this.LS_S, JSON.stringify(this.stats)); }
+  dayStr(off){ const d = new Date(); if(off) d.setDate(d.getDate()+off); return d.toISOString().slice(0,10); }
+
+  // Appelé chaque fois qu'un mot est validé (bonne/mauvaise réponse) dans n'importe quel mode.
+  recordAnswer(word, correct){
+    const st = this.stats, today = this.dayStr(0);
+    if (st.day !== today) { st.day = today; st.dailyDone = 0; }
+    if (st.lastDay !== today) { st.streak = (st.lastDay === this.dayStr(-1)) ? (st.streak||0)+1 : 1; st.lastDay = today; }
+    st.totalAnswered++;
+    const w = this.words.find(x => x.id === word.id) || word;
+    if (correct) { st.totalCorrect++; st.xp += 10; st.dailyDone++; st.week[today] = (st.week[today]||0)+1; w.learned = true; w.miss = false; }
+    else { w.miss = true; w.learned = false; }
+    this.saveStats(); this.saveWords();
+  }
+
+  MODES = [
+    {id:'quiz', name:'Multiple Choice', desc:'Pick the right translation', emoji:'🎯', tint:'rgba(122,107,247,.15)'},
+    {id:'write', name:'Write It', desc:'Type the translation', emoji:'⌨️', tint:'rgba(247,122,196,.15)'},
+    {id:'match', name:'Word Matching', desc:'Pair words to meanings', emoji:'🔗', tint:'rgba(79,142,247,.15)'},
+    {id:'timed', name:'Timed Challenge', desc:'Beat the clock', emoji:'⏱️', tint:'rgba(255,182,72,.18)'},
+    {id:'classic', name:'Flashcards', desc:'Flip and self-rate', emoji:'🃏', tint:'rgba(89,193,115,.16)'},
+  ];
+
+  shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+
+  componentWillUnmount(){ clearInterval(this._t); }
+
+  // ---- navigation ----
+  go = (screen, tab) => this.setState(s => ({ screen, tab: tab || s.tab, prev: s.screen }));
+
+  buildSession = (pool) => {
+    const words = this.shuffle(pool).slice(0,12);
+    const dirs = words.map(()=> this.state.dirMode==='random' ? (Math.random()<.5?'en':'fr') : this.state.dirMode);
+    this.setState({ screen:'session', mode:'classic', sIdx:0, flipped:false, sKnown:0, sessionWords:words, dirs });
+  };
+  startSession = () => this.buildSession(this.words);
+  startCategory = (name) => this.buildSession(this.words.filter(w=>w.cat===name));
+  setDirMode = (m) => this.setState({ dirMode:m });
+  startDaily = () => this.startSession();
+  startMode = (id) => {
+    if(id==='classic') return this.startSession();
+    if(id==='quiz') return this.startQuiz();
+    if(id==='write') return this.setState({screen:'write',wIdx:0,wVal:'',wChecked:false,wCorrect:0});
+    if(id==='match') return this.startMatch();
+    if(id==='timed') return this.startTimed();
+  };
+
+  flip = () => this.setState(s => ({ flipped: !s.flipped }));
+  answer = (known) => {
+    const s = this.state;
+    const w = s.sessionWords[s.sIdx]; if(w) this.recordAnswer(w, known);
+    const known2 = s.sKnown + (known?1:0);
+    if(s.sIdx+1 >= s.sessionWords.length){
+      this.finish(known2, s.sessionWords.length);
+    } else {
+      this.setState({ sIdx:s.sIdx+1, flipped:false, sKnown:known2 });
+    }
+  };
+
+  startQuiz = () => {
+    const data = this.shuffle(this.words).slice(0,6).map(w=>{
+      const wrong = this.shuffle(this.words.filter(x=>x.fr!==w.fr)).slice(0,3).map(x=>x.fr);
+      const opts = this.shuffle([w.fr,...wrong]);
+      return { word:w.en, ipa:w.ipa, answer:w.fr, options:opts, ref:w };
+    });
+    this.setState({ screen:'quiz', qIdx:0, qSel:null, qCorrect:0, qData:data });
+  };
+  selectQuiz = (i) => this.setState(s => {
+    if(s.qSel!=null) return {};
+    const item = s.qData[s.qIdx];
+    const correct = item.options[i] === item.answer;
+    if(item.ref) this.recordAnswer(item.ref, correct);
+    return { qSel:i, qCorrect:s.qCorrect+(correct?1:0) };
+  });
+  qNext = () => this.setState(s => {
+    if(s.qIdx+1 >= s.qData.length){ this.finish(s.qCorrect, s.qData.length); return {}; }
+    return { qIdx:s.qIdx+1, qSel:null };
+  });
+
+  wInput = (e) => this.setState({ wVal:e.target.value });
+  wAction = () => this.setState(s => {
+    const w = this.words[s.wIdx];
+    if(!s.wChecked){
+      const ok = s.wVal.trim().toLowerCase() === w.fr.toLowerCase();
+      if(w) this.recordAnswer(w, ok);
+      return { wChecked:true, wCorrect:s.wCorrect+(ok?1:0) };
+    }
+    if(s.wIdx+1 >= 6 || s.wIdx+1 >= this.words.length){ this.finish(s.wCorrect, Math.min(6,this.words.length)); return {}; }
+    return { wIdx:s.wIdx+1, wVal:'', wChecked:false };
+  });
+
+  startMatch = () => {
+    const pick = this.shuffle(this.words).slice(0,4);
+    this.setState({ screen:'match', mSel:null, mMatched:[],
+      mLeft: this.shuffle(pick).map(w=>({key:w.fr, text:w.en})),
+      mRight: this.shuffle(pick).map(w=>({key:w.fr, text:w.fr})) });
+  };
+  matchTap = (side, key) => this.setState(s => {
+    if(s.mMatched.includes(key)) return {};
+    if(!s.mSel) return { mSel:{side,key} };
+    if(s.mSel.side===side) return { mSel:{side,key} };
+    if(s.mSel.key===key){ const w=this.words.find(x=>x.fr===key); if(w) this.recordAnswer(w, true); return { mMatched:[...s.mMatched,key], mSel:null }; }
+    return { mSel:null };
+  });
+
+  startTimed = () => {
+    clearInterval(this._t);
+    this.setState({ screen:'timed', tLeft:30, tScore:0, tIdx:0 });
+    this._t = setInterval(()=>this.setState(s=>{
+      if(s.tLeft<=1){ clearInterval(this._t); this.finish(s.tScore, s.tScore); return {tLeft:0}; }
+      return {tLeft:s.tLeft-1};
+    }),1000);
+  };
+  timedAns = (ok) => this.setState(s=>{ const w=this.words[s.tIdx]; if(w) this.recordAnswer(w, ok); return { tScore:s.tScore+(ok?1:0), tIdx:(s.tIdx+1)%this.words.length }; });
+
+  finish = (score, total) => { clearInterval(this._t); this.setState({ screen:'celeb', celeb:{score, total, xp:score*10} }); };
+  finishDone = () => this.setState({ screen:'home', tab:'home', celeb:null });
+
+  toggleDark = () => this.setState(s => ({ dark: !s.dark }));
+  setAccent = (c) => this.setState({ accent:c });
+  openDetail = (w) => this.setState(s=>({ screen:'detail', detail:w, prev:s.screen, detailPrev:s.screen }));
+  goBack = () => this.setState(s=>({ screen:s.prev||'home' }));
+  detailBack = () => this.setState(s=>({ screen:s.detailPrev||'categories', detail:null }));
+  searchInput = (e) => this.setState({ searchVal:e.target.value });
+  wlInput = (e) => this.setState({ wlQuery:e.target.value });
+  toggleWlGroup = (letter) => this.setState(s => ({ wlOpen: { ...s.wlOpen, [letter]: !s.wlOpen[letter] } }));
+
+  // ---- ajout / import de mots (persistés) ----
+  addInput = (field, e) => this.setState({ [field]: e.target.value, addError:false });
+  setAddCat = (name) => this.setState({ addCat:name });
+  saveWord = () => {
+    const s = this.state;
+    const en = (s.addEn||'').trim(), fr = (s.addFr||'').trim();
+    if(!en || !fr){ this.setState({ addError:true }); return; }
+    const cat = s.addCat || this.CATS[0].name;
+    const clear = { addEn:'', addFr:'', addIpa:'', addEx:'', addCat:null, addError:false, editId:null };
+    if(s.editId){
+      const idx = this.words.findIndex(x => x.id === s.editId);
+      if(idx >= 0){ this.words[idx] = this.enrich([{ ...this.words[idx], en, fr, ipa:(s.addIpa||'').trim(), ex:(s.addEx||'').trim(), cat }])[0]; this.saveWords(); }
+      this.setState({ ...clear, screen:'detail', detail: idx>=0 ? this.words[idx] : null });
+      return;
+    }
+    const w = this.enrich([{ id:'w'+Date.now(), en, fr, ipa:(s.addIpa||'').trim(), ex:(s.addEx||'').trim(), cat, learned:false, miss:false, favorite:false }])[0];
+    this.words.push(w); this.saveWords();
+    this.setState({ ...clear, screen: s.prev || 'categories', tab:'categories' });
+  };
+  openEdit = (w) => this.setState(s => ({ screen:'add', prev:s.screen, editId:w.id, addEn:w.en, addFr:w.fr, addIpa:w.ipa||'', addEx:w.ex||'', addCat:w.cat, addError:false }));
+  deleteWord = (w) => { this.words = this.words.filter(x => x.id !== w.id); this.saveWords(); this.setState(s => ({ screen: s.detailPrev || 'categories', tab:'categories', detail:null })); };
+
+  // ---- catégories personnalisées (persistées séparément des catégories fixes) ----
+  catNameInput = (e) => this.setState({ newCatName: e.target.value, catError:false });
+  catEmojiInput = (e) => this.setState({ newCatEmoji: e.target.value });
+  setCatColor = (c) => this.setState({ newCatColor: c });
+  hexToRgba = (hex, a) => { const n = parseInt(hex.slice(1),16); return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`; };
+  saveCategory = () => {
+    const s = this.state;
+    const name = (s.newCatName||'').trim();
+    if(!name || this.allCats.some(c => c.name.toLowerCase() === name.toLowerCase())){ this.setState({ catError:true }); return; }
+    const color = s.newCatColor || '#4F8EF7';
+    this.customCats.push({ name, emoji:(s.newCatEmoji||'').trim() || '📁', color, tint:this.hexToRgba(color,.15), prog:0 });
+    this.saveCustomCats();
+    this.setState({ screen:'categories', tab:'categories', newCatName:'', newCatEmoji:'📁', newCatColor:'#4F8EF7', catError:false });
+  };
+  nameInput = (e) => { const v = e.target.value; localStorage.setItem('ec_name', v); this.setState({ nameVal:v }); };
+  resetProgress = () => this.setState({ resetConfirm: true });   // 1er clic : demande confirmation
+  resetCancel = () => this.setState({ resetConfirm: false });
+  resetConfirmYes = () => {                                       // 2e clic : réinitialise vraiment
+    this.stats = { xp:0, streak:0, lastDay:null, day:null, dailyDone:0, totalAnswered:0, totalCorrect:0, week:{} };
+    this.words = this.words.map(w => ({ ...w, learned:false, miss:false }));
+    this.saveStats(); this.saveWords(); this.setState({ resetConfirm: false });
+  };
+  importInput = (e) => this.setState({ importText:e.target.value, importMsg:'' });
+
+  // parseur CSV minimal : gère les champs entre guillemets (virgules/quotes échappées incluses)
+  parseCsvLine(line){
+    const out = []; let cur = ''; let inQ = false;
+    for(let i=0;i<line.length;i++){
+      const c = line[i];
+      if(inQ){
+        if(c === '"'){ if(line[i+1] === '"'){ cur+='"'; i++; } else inQ = false; }
+        else cur += c;
+      } else if(c === '"') inQ = true;
+      else if(c === ',') { out.push(cur); cur=''; }
+      else cur += c;
+    }
+    out.push(cur);
+    return out.map(x=>x.trim());
+  }
+
+  csvFileInput = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if(!file) return;
+    if(!/\.csv$/i.test(file.name)){ this.setState({ importMsg:'Sélectionne un fichier .csv valide.' }); return; }
+    const reader = new FileReader();
+    reader.onload = () => {
+      let text = String(reader.result || '');
+      if(text.charCodeAt(0) === 0xFEFF) text = text.slice(1); // retire le BOM éventuel
+      if(!text.trim()){ this.setState({ importMsg:'Le fichier CSV est vide.' }); return; }
+      this.setState({ importText:text, importMsg:'' });
+    };
+    reader.onerror = () => this.setState({ importMsg:'Impossible de lire ce fichier.' });
+    reader.readAsText(file, 'UTF-8'); // encodage explicite : préserve les caractères accentués
+  };
+
+  importWords = () => {
+    let raw = this.state.importText||'';
+    if(raw.charCodeAt(0) === 0xFEFF) raw = raw.slice(1);
+    const lines = raw.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
+    if(!lines.length){ this.setState({ importMsg:'Aucune donnée à importer.' }); return; }
+    let added = 0;
+    lines.forEach((line, i) => {
+      const p = this.parseCsvLine(line);
+      if(i===0 && /^(word|mot)$/i.test(p[0]||'')) return; // ignore la ligne d'en-tête
+      const en = (p[0]||'').trim(), fr = (p[1]||'').trim();
+      if(!en || !fr) return;
+      const rawCat = (p[2]||'').trim();
+      const matched = rawCat && this.allCats.find(c => c.name.toLowerCase() === rawCat.toLowerCase());
+      const cat = matched ? matched.name : this.CATS[0].name;
+      this.words.push(this.enrich([{ id:'w'+Date.now()+'_'+added, en, fr, ipa:'', ex:'', cat, learned:false, miss:false, favorite:false }])[0]);
+      added++;
+    });
+    if(added){ this.saveWords(); this.setState({ screen:'categories', tab:'categories', importText:'', importMsg:'', importType:'paste' }); }
+    else this.setState({ importMsg:'Aucun mot valide trouvé. Format attendu : mot, traduction, catégorie (optionnelle).' });
+  };
+
+  renderVals(){
+    const s = this.state;
+    const A = s.accent;
+    const theme = s.dark
+      ? '--bg:#0E1116;--card:#1A1F27;--text:#F2F4F8;--muted:#8A90A3;--line:rgba(255,255,255,.08);--track:#252B36;--nav:rgba(20,24,31,.82)'
+      : '--bg:#EEF1F7;--card:#FFFFFF;--text:#12172B;--muted:#8A8FA3;--line:rgba(0,0,0,.06);--track:#EDF0F6;--nav:rgba(255,255,255,.82)';
+
+    const counts = {}, learnedByCat = {};
+    this.words.forEach(w=>{ counts[w.cat]=(counts[w.cat]||0)+1; if(w.learned) learnedByCat[w.cat]=(learnedByCat[w.cat]||0)+1; });
+    const cats = this.allCats.map(c => { const total=counts[c.name]||0; const done=learnedByCat[c.name]||0;
+      return { ...c, done, total, pct: total?Math.round(done/total*100)+'%':'0%', onClick: () => this.startCategory(c.name) }; });
+    const learnedCount = this.words.filter(w=>w.learned).length;
+    const reviewCount = this.words.filter(w=>w.miss).length;
+
+    const modes = this.MODES.filter(m=>m.id!=='classic').concat(this.MODES.filter(m=>m.id==='classic'))
+      .map(m => ({ ...m, onClick: () => this.startMode(m.id) }));
+
+    // session
+    const sList = s.sessionWords.length ? s.sessionWords : this.words;
+    const dir = s.dirs[s.sIdx] || 'en';
+    const sCur = sList[s.sIdx] || sList[0];
+    const enToFr = dir==='en';
+    const fontFor = (t)=> (t||'').length>16?'26px':((t||'').length>9?'34px':'44px');
+
+    // ---- gamification dérivée des stats réelles ----
+    const st = this.stats;
+    const today = this.dayStr(0);
+    const xp = st.xp || 0;
+    const level = Math.floor(xp/300) + 1;
+    const dailyDone = (st.day === today) ? (st.dailyDone||0) : 0;
+    const goal = this.dailyGoal;
+    const streak = (st.lastDay === today || st.lastDay === this.dayStr(-1)) ? (st.streak||0) : 0;
+    const successRate = st.totalAnswered ? Math.round(st.totalCorrect/st.totalAnswered*100) : 0;
+    const dayLabels = ['L','M','M','J','V','S','D'];
+    const mondayOff = (new Date().getDay()+6)%7; // 0 = lundi
+    const weekVals = dayLabels.map((_,i)=> st.week[this.dayStr(i-mondayOff)] || 0);
+    const weekMax = Math.max(1, ...weekVals);
+
+    const vals = {
+      themeVars: theme,
+      isHome: s.screen==='home', isLearn: s.screen==='learn', isCategories: s.screen==='categories',
+      isStats: s.screen==='stats', isSettings: s.screen==='settings', isSession: s.screen==='session',
+      isQuiz: s.screen==='quiz', isWrite: s.screen==='write', isMatch: s.screen==='match',
+      isTimed: s.screen==='timed', isAdd: s.screen==='add', isSearch: s.screen==='search',
+      isImport: s.screen==='import', isDetail: s.screen==='detail', isProfile: s.screen==='profile',
+      isAddCat: s.screen==='addcat',
+      isWordlist: s.screen==='wordlist', goWordlist: ()=>this.go('wordlist'),
+      wlQuery: s.wlQuery, wlInput: this.wlInput,
+      showCeleb: s.screen==='celeb',
+      showTabs: ['home','learn','categories','stats','settings','search','profile'].includes(s.screen),
+      userName: s.nameVal, nameInput: this.nameInput,
+      profileInitial: ((s.nameVal||'A').trim()[0] || 'A').toUpperCase(),
+      resetProgress: this.resetProgress, resetCancel: this.resetCancel, resetConfirmYes: this.resetConfirmYes,
+      resetConfirm: s.resetConfirm, notResetConfirm: !s.resetConfirm,
+
+      // gamification
+      streak, level, nextLevel: level+1, xp,
+      xpPct: Math.round((xp%300)/300*100)+'%',
+      xpLeft: 300-(xp%300),
+      dailyDone, dailyGoal: goal, dailyLeft: Math.max(0, goal-dailyDone),
+      goalOffset: 326 - 326*Math.min(1, goal ? dailyDone/goal : 0),
+      learnedCount, reviewCount, successRate,
+
+      cats, modes,
+      week: dayLabels.map((label,i)=>({ label,
+        h: (weekVals[i] ? Math.max(10, Math.round(weekVals[i]/weekMax*100)) : 4)+'%',
+        color: (weekVals[i]===weekMax && weekMax>0) ? '#59C173' : (weekVals[i] ? '#4F8EF7' : '#A9C6FB') })),
+
+      accents: [{color:'#4F8EF7'},{color:'#59C173'},{color:'#FFB648'},{color:'#F77AC4'}].map(a=>({
+        color:a.color, check: A===a.color?'✓':'', onClick:()=>this.setAccent(a.color) })),
+      darkTrack: s.dark?'#4F8EF7':'#D5DAE4', darkKnob: s.dark?'21px':'0px',
+      dirModes: [
+        {id:'en', label:'EN → FR', sub:'anglais → français'},
+        {id:'fr', label:'FR → EN', sub:'français → anglais'},
+        {id:'random', label:'Aléatoire', sub:'mélange'},
+      ].map(d=>({ label:d.label, sub:d.sub, onClick:()=>this.setDirMode(d.id),
+        bg: s.dirMode===d.id ? '#fff' : 'transparent',
+        fg: s.dirMode===d.id ? '#4F8EF7' : 'var(--muted,#8A8FA3)',
+        shadow: s.dirMode===d.id ? '0 2px 6px rgba(0,0,0,.12)' : 'none' })),
+
+      // navigation callbacks
+      goHome:()=>this.go('home','home'), goLearn:()=>this.go('learn','learn'),
+      goCategories:()=>this.go('categories','categories'), goStats:()=>this.go('stats','stats'),
+      goSettings:()=>this.go('settings','settings'), goSearch:()=>this.go('search','search'),
+      goAdd:()=>this.go('add'), goImport:()=>this.go('import'), goBack:this.goBack,
+      goAddCat:()=>this.go('addcat'),
+      newCatName: s.newCatName, catNameInput: this.catNameInput,
+      newCatEmoji: s.newCatEmoji, catEmojiInput: this.catEmojiInput,
+      catError: s.catError, saveCategory: this.saveCategory,
+      catColors: ['#4F8EF7','#59C173','#FFB648','#F77AC4','#7A6BF7','#FF7A7A'].map(c=>({
+        color:c, check: s.newCatColor===c?'✓':'', onClick:()=>this.setCatColor(c) })),
+      startSession:this.startSession, startDaily:this.startDaily,
+      toggleDark:this.toggleDark, flip:this.flip,
+      answerYes:()=>this.answer(true), answerNo:()=>this.answer(false),
+      finishDone:this.finishDone, finishGeneric:()=>this.finish(this.state.mMatched.length, this.state.mLeft.length),
+
+      // session view
+      sPct: Math.round((s.sIdx)/sList.length*100)+'%',
+      sCount: (s.sIdx+1)+' / '+sList.length,
+      flipped: s.flipped, notFlipped: !s.flipped,
+      flipT: s.flipped?'rotateY(180deg)':'rotateY(0deg)', sKey: s.sIdx,
+      sCur,
+      sFront: enToFr ? sCur.en : sCur.fr,
+      sFrontSub: enToFr ? sCur.ipa : 'français',
+      sBack: enToFr ? sCur.fr : sCur.en,
+      sHasIpa: !!sCur.ipa, sHasEx: !!sCur.ex,
+      sFrontSize: fontFor(enToFr ? sCur.en : sCur.fr),
+      sBackSize: fontFor(enToFr ? sCur.fr : sCur.en),
+      sDirLabel: enToFr ? 'EN → FR' : 'FR → EN',
+      sDirColor: enToFr ? '#4F8EF7' : '#59C173',
+
+      // quiz view
+      qCount: s.qData.length? (s.qIdx+1)+' / '+s.qData.length : '',
+      qPct: s.qData.length? Math.round(s.qIdx/s.qData.length*100)+'%':'0%',
+      qWord: s.qData[s.qIdx]?.word || '', qIpa: s.qData[s.qIdx]?.ipa || '',
+      qAnswered: s.qSel!=null,
+      qNext:this.qNext,
+      qOptions: (s.qData[s.qIdx]?.options||[]).map((t,i)=>{
+        const ans = s.qData[s.qIdx].answer;
+        let bg='var(--card,#fff)', fg='var(--text,#12172B)', border='var(--line,rgba(0,0,0,.08))', icon='';
+        if(s.qSel!=null){
+          if(t===ans){ bg='rgba(89,193,115,.12)'; fg='#3FA85E'; border='#59C173'; icon='✓'; }
+          else if(i===s.qSel){ bg='rgba(255,107,107,.1)'; fg='#FF6B6B'; border='#FF6B6B'; icon='✕'; }
+          else { fg='var(--muted,#8A8FA3)'; }
+        }
+        return { text:t, bg, fg, border, icon, onClick:()=>this.selectQuiz(i) };
+      }),
+
+      // write view
+      wCount: (s.wIdx+1)+' / '+Math.min(6,this.words.length),
+      wPct: Math.round(s.wIdx/Math.min(6,this.words.length)*100)+'%',
+      wWord: this.words[s.wIdx]?.en || '', wEmoji: this.words[s.wIdx]?.emoji || '',
+      wTargetLang: 'French', wVal: s.wVal, wChecked: s.wChecked,
+      wInput:this.wInput, wAction:this.wAction,
+      wInputBorder: s.wChecked ? (s.wVal.trim().toLowerCase()===(this.words[s.wIdx]?.fr||'').toLowerCase()?'#59C173':'#FF6B6B') : 'var(--line,rgba(0,0,0,.06))',
+      wResultColor: s.wVal.trim().toLowerCase()===(this.words[s.wIdx]?.fr||'').toLowerCase()?'#3FA85E':'#FF6B6B',
+      wResultText: s.wVal.trim().toLowerCase()===(this.words[s.wIdx]?.fr||'').toLowerCase()?'✓ Correct!':('Answer: '+(this.words[s.wIdx]?.fr||'')),
+      wBtnColor: s.wChecked?'#59C173':'#4F8EF7',
+      wBtnText: s.wChecked?'Continue →':'Check answer',
+
+      // matching
+      mTotal: s.mLeft.length, mMatchedCount: s.mMatched.length,
+      mDone: s.mLeft.length>0 && s.mMatched.length===s.mLeft.length,
+      mLeft: s.mLeft.map(it=>{
+        const on = s.mSel && s.mSel.side==='L' && s.mSel.key===it.key;
+        const done = s.mMatched.includes(it.key);
+        return { text:it.text, onClick:()=>this.matchTap('L',it.key),
+          bg: done?'rgba(89,193,115,.15)':(on?'rgba(79,142,247,.12)':'var(--card,#fff)'),
+          fg: done?'#3FA85E':(on?'#4F8EF7':'var(--text,#12172B)'),
+          border: done?'#59C173':(on?'#4F8EF7':'var(--line,rgba(0,0,0,.08))') };
+      }),
+      mRight: s.mRight.map(it=>{
+        const on = s.mSel && s.mSel.side==='R' && s.mSel.key===it.key;
+        const done = s.mMatched.includes(it.key);
+        return { text:it.text, onClick:()=>this.matchTap('R',it.key),
+          bg: done?'rgba(89,193,115,.15)':(on?'rgba(79,142,247,.12)':'var(--card,#fff)'),
+          fg: done?'#3FA85E':(on?'#4F8EF7':'var(--text,#12172B)'),
+          border: done?'#59C173':(on?'#4F8EF7':'var(--line,rgba(0,0,0,.08))') };
+      }),
+
+      // timed
+      tLeft: s.tLeft, tScore: s.tScore, tPct: Math.round(s.tLeft/30*100)+'%',
+      tBarColor: s.tLeft<=10?'#FF6B6B':'#FFB648',
+      tWord: this.words[s.tIdx]?.en || '', tEmoji: this.words[s.tIdx]?.emoji || '',
+      tPrompt: 'Do you know “'+(this.words[s.tIdx]?.fr||'')+'”?',
+      tRight:()=>this.timedAns(true), tWrong:()=>this.timedAns(false),
+
+      // add
+      addFields: [
+        {label:'Word (English)', ph:'e.g. Apple', key:'addEn'},
+        {label:'Translation (French)', ph:'e.g. Pomme', key:'addFr'},
+        {label:'Pronunciation', ph:'/ˈæpəl/', key:'addIpa'},
+        {label:'Example sentence', ph:'I eat an apple every morning.', key:'addEx'},
+      ].map(f=>({ ...f, value: s[f.key]||'', oninput:(e)=>this.addInput(f.key, e) })),
+      addCats: this.allCats.map(c=>({ name:c.name, emoji:c.emoji, tint:c.tint,
+        onClick:()=>this.setAddCat(c.name), sel: s.addCat===c.name ? c.color : 'transparent' })),
+      addError: s.addError, saveWord: this.saveWord,
+      addTitle: s.editId ? 'Edit word' : 'New word',
+      editDetail: ()=>this.openEdit(s.detail), deleteDetail: ()=>this.deleteWord(s.detail), detailBack: this.detailBack,
+      importText: s.importText, importInput: this.importInput, importWords: this.importWords, importMsg: s.importMsg,
+
+      // search
+      searchVal: s.searchVal, searchInput:this.searchInput,
+      showRecent: !s.searchVal,
+      recents: ['pomme','airport','verbs','beach'],
+      filters: [
+        {id:'all',label:'All'},{id:'fav',label:'⭐ Favorites'},{id:'recent',label:'Recent'},{id:'food',label:'🍎 Food'},{id:'travel',label:'✈️ Travel'}
+      ].map(f=>({ label:f.label, onClick:()=>this.setState({filter:f.id}),
+        bg: s.filter===f.id?A:'var(--card,#fff)', fg: s.filter===f.id?'#fff':'var(--muted,#8A8FA3)' })),
+      searchResults: this.words.filter(w=> s.searchVal && (w.en.toLowerCase().includes(s.searchVal.toLowerCase())||w.fr.toLowerCase().includes(s.searchVal.toLowerCase())))
+        .map(w=>({ en:w.en, fr:w.fr, cat:w.cat, emoji:w.emoji, tint:'rgba(79,142,247,.12)', onClick:()=>this.openDetail(w) })),
+
+      // my words (liste complète, filtrable, groupée A→Z par première lettre du mot)
+      wlCount: (()=>{ const q=(s.wlQuery||'').toLowerCase(); return this.words.filter(w=> !q || w.en.toLowerCase().includes(q) || w.fr.toLowerCase().includes(q)).length; })(),
+      wlGroups: (()=>{
+        const q=(s.wlQuery||'').toLowerCase();
+        const filtered = this.words.filter(w=> !q || w.en.toLowerCase().includes(q) || w.fr.toLowerCase().includes(q))
+          .slice().sort((a,b)=> a.en.localeCompare(b.en));
+        const byLetter = {};
+        filtered.forEach(w=>{
+          const first = (w.en||'').trim().charAt(0).toUpperCase();
+          const letter = /[A-Z]/.test(first) ? first : '#';
+          (byLetter[letter] = byLetter[letter] || []).push(w);
+        });
+        return Object.keys(byLetter).sort().map(letter => {
+          const open = q ? true : !!s.wlOpen[letter];
+          return {
+          letter, count: byLetter[letter].length, open,
+          arrowRot: open ? '90deg' : '0deg', onClick: ()=>this.toggleWlGroup(letter),
+          words: byLetter[letter].map(w=>({ en:w.en, fr:w.fr, cat:w.cat, emoji:w.emoji, tint:(this.META[w.cat]?(this.META[w.cat].tint):'rgba(79,142,247,.12)'), onClick:()=>this.openDetail(w) }))
+        }; });
+      })(),
+
+      // import
+      setImportCsv:()=>this.setState({importType:'csv'}), setImportPaste:()=>this.setState({importType:'paste'}),
+      impCsvBg: s.importType==='csv'?'rgba(79,142,247,.1)':'var(--card,#fff)', impCsvBorder: s.importType==='csv'?'#4F8EF7':'var(--line,rgba(0,0,0,.06))',
+      impPasteBg: s.importType==='paste'?'rgba(79,142,247,.1)':'var(--card,#fff)', impPasteBorder: s.importType==='paste'?'#4F8EF7':'var(--line,rgba(0,0,0,.06))',
+      isImportCsv: s.importType==='csv', csvFileInput: this.csvFileInput,
+
+      // detail
+      dWord: s.detail?.en||'', dFr: s.detail?.fr||'', dIpa: s.detail?.ipa||'', dEx: s.detail?.ex||'',
+      dCat: s.detail?.cat||'', dEmoji: s.detail?.emoji||'',
+      dHasIpa: !!(s.detail&&s.detail.ipa), dHasEx: !!(s.detail&&s.detail.ex),
+
+      // celeb
+      celebScore: s.celeb? s.celeb.score+'/'+s.celeb.total : '',
+      celebXp: s.celeb? s.celeb.xp : 0,
+      celebSub: s.celeb && s.celeb.score===s.celeb.total ? 'Perfect run — flawless! 🌟' : 'Great work, keep the streak alive!',
+      confetti: Array.from({length:14}).map((_,i)=>({ left:(i*7+3)+'%', color:['#4F8EF7','#59C173','#FFB648','#F77AC4'][i%4], dur:(1.4+Math.random()*1.2).toFixed(2)+'s', delay:(Math.random()*.6).toFixed(2)+'s' })),
+
+      // tabs
+      tabs: [
+        {id:'home',icon:'🏠',label:'Home',go:()=>this.go('home','home')},
+        {id:'learn',icon:'📚',label:'Learn',go:()=>this.go('learn','learn')},
+        {id:'categories',icon:'🗂️',label:'Cards',go:()=>this.go('categories','categories')},
+        {id:'stats',icon:'📊',label:'Stats',go:()=>this.go('stats','stats')},
+        {id:'profile',icon:'👤',label:'Profil',go:()=>this.go('profile','profile')},
+        {id:'settings',icon:'⚙️',label:'Settings',go:()=>this.go('settings','settings')},
+      ].map(t=>{
+        const active = s.tab===t.id;
+        return { icon:t.icon, label:t.label, onClick:t.go,
+          color: active?A:'var(--muted,#8A8FA3)',
+          filter: active?'none':'grayscale(1) opacity(.55)',
+          scale: active?'1.12':'1' };
+      }),
+    };
+    return vals;
+  }
+}
+</script>
+
+<script>
+App.tpl = document.getElementById('tpl');
+App.comp = new Component();
+const root = document.getElementById('app');
+root.addEventListener('click', e => { const t = e.target.closest('[data-onclick]'); if(t){ const f = H.click[t.getAttribute('data-onclick')]; if(f) f(e); } });
+root.addEventListener('input', e => { const t = e.target.closest('[data-oninput]'); if(t){ const f = H.input[t.getAttribute('data-oninput')]; if(f) f(e); } });
+App.render();
+</script>
+</body>
+</html>
