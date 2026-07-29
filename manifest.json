@@ -1,0 +1,16 @@
+{
+  "name": "English Cards",
+  "short_name": "English Cards",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#EEF1F7",
+  "theme_color": "#4F8EF7",
+  "icons": [
+    {
+      "src": "IMG_8650.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
