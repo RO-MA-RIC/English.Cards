@@ -157,6 +157,97 @@
       </div>
     </sc-if>
 
+    <!-- IRREGULAR VERBS HUB -->
+    <sc-if value="{{ isIrregularHub }}" hint-placeholder-val="{{ false }}">
+      <div class="ec-scr ec-scroll" style="position:absolute;inset:0;padding:64px 20px 32px;overflow-y:auto">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
+          <div class="ec-btn" onClick="{{ goLearn }}" style="width:34px;height:34px;border-radius:11px;background:var(--card,#fff);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--muted,#8A8FA3)">‹</div>
+          <span style="font-size:24px;font-weight:800;color:var(--text,#12172B)">Verbes irréguliers</span>
+        </div>
+        <div style="font-size:14px;color:var(--muted,#8A8FA3);margin:6px 0 20px 46px">Choisis un mode de révision</div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <sc-for list="{{ irModes }}" as="im" hint-placeholder-count="4">
+            <button class="ec-btn" onClick="{{ im.onClick }}" style="width:100%;text-align:left;background:var(--card,#fff);border-radius:20px;padding:16px;display:flex;align-items:center;gap:14px;box-shadow:0 8px 22px -14px rgba(40,60,110,.4)">
+              <div style="width:48px;height:48px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:24px;background:{{ im.tint }}">{{ im.emoji }}</div>
+              <div style="flex:1"><div style="font-size:16px;font-weight:800;color:var(--text,#12172B)">{{ im.name }}</div><div style="font-size:12px;color:var(--muted,#8A8FA3);margin-top:2px">{{ im.desc }}</div></div>
+              <span style="color:var(--muted,#8A8FA3)">›</span>
+            </button>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- IRREGULAR VERBS TABLE -->
+    <sc-if value="{{ isIrregularTable }}" hint-placeholder-val="{{ false }}">
+      <div class="ec-scr ec-scroll" style="position:absolute;inset:0;padding:64px 20px 32px;overflow-y:auto">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px">
+          <div class="ec-btn" onClick="{{ goIrregularHub }}" style="width:34px;height:34px;border-radius:11px;background:var(--card,#fff);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--muted,#8A8FA3)">‹</div>
+          <span style="font-size:22px;font-weight:800;color:var(--text,#12172B)">Tableau complet</span>
+        </div>
+        <div style="background:var(--card,#fff);border-radius:18px;overflow:hidden;box-shadow:0 8px 22px -16px rgba(40,60,110,.4)">
+          <div style="display:flex;padding:10px 12px;background:var(--track,#EDF0F6);font-size:11px;font-weight:800;color:var(--muted,#8A8FA3);letter-spacing:.3px">
+            <span style="flex:1.1">INFINITIF</span><span style="flex:1">PRÉTÉRIT</span><span style="flex:1">PARTICIPE</span><span style="flex:1">FRANÇAIS</span>
+          </div>
+          <sc-for list="{{ irregularRows }}" as="v" hint-placeholder-count="0">
+            <div style="display:flex;padding:10px 12px;border-top:1px solid var(--line,rgba(0,0,0,.06));font-size:12.5px">
+              <span lang="en" translate="no" style="flex:1.1;font-weight:800;color:var(--text,#12172B)">{{ v.base }}</span>
+              <span lang="en" translate="no" style="flex:1;color:var(--text,#12172B)">{{ v.past }}</span>
+              <span lang="en" translate="no" style="flex:1;color:var(--text,#12172B)">{{ v.pp }}</span>
+              <span style="flex:1;color:var(--muted,#8A8FA3)">{{ v.fr }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- IRREGULAR VERBS QUIZ -->
+    <sc-if value="{{ isIrregularQuiz }}" hint-placeholder-val="{{ false }}">
+      <div class="ec-scr" style="position:absolute;inset:0;background:var(--bg,#EEF1F7);padding:64px 20px 32px;display:flex;flex-direction:column">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">
+          <div class="ec-btn" onClick="{{ goIrregularHub }}" style="width:34px;height:34px;border-radius:11px;background:var(--card,#fff);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--muted,#8A8FA3)">✕</div>
+          <div style="flex:1;height:12px;background:var(--track,#EDF0F6);border-radius:8px;overflow:hidden"><div style="width:{{ irPct }};height:100%;background:#2FBFA0;border-radius:8px;transition:width .4s"></div></div>
+          <span style="font-size:13px;font-weight:800;color:var(--text,#12172B)">{{ irCount }}</span>
+        </div>
+        <div style="font-size:13px;font-weight:800;color:#2FBFA0;letter-spacing:.5px;margin-bottom:8px">{{ irPromptLabel }}</div>
+        <div style="background:var(--card,#fff);border-radius:26px;padding:36px 20px;text-align:center;margin-bottom:24px;box-shadow:0 16px 40px -22px rgba(40,60,110,.5)">
+          <div style="font-size:13px;color:var(--muted,#8A8FA3);font-weight:700;margin-bottom:6px">INFINITIF</div>
+          <div lang="en" translate="no" style="font-size:36px;font-weight:800;color:var(--text,#12172B);letter-spacing:-1px">{{ irWord }}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px;flex:1">
+          <sc-for list="{{ irOptions }}" as="opt" hint-placeholder-count="4">
+            <button class="ec-btn" onClick="{{ opt.onClick }}" style="width:100%;background:{{ opt.bg }};color:{{ opt.fg }};border:2px solid {{ opt.border }};border-radius:18px;padding:18px;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:space-between">
+              <span>{{ opt.text }}</span><span style="font-size:18px">{{ opt.icon }}</span>
+            </button>
+          </sc-for>
+        </div>
+        <sc-if value="{{ irAnswered }}" hint-placeholder-val="{{ false }}">
+          <button class="ec-btn" onClick="{{ irNext }}" style="width:100%;background:#59C173;color:#fff;border-radius:20px;padding:17px;font-size:16px;font-weight:800;margin-top:16px;box-shadow:0 14px 26px -12px rgba(89,193,115,.7);animation:ec-up .3s">Continue →</button>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <!-- IRREGULAR VERBS WRITE IT -->
+    <sc-if value="{{ isIrregularWrite }}" hint-placeholder-val="{{ false }}">
+      <div class="ec-scr" style="position:absolute;inset:0;background:var(--bg,#EEF1F7);padding:64px 20px 32px;display:flex;flex-direction:column">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px">
+          <div class="ec-btn" onClick="{{ goIrregularHub }}" style="width:34px;height:34px;border-radius:11px;background:var(--card,#fff);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--muted,#8A8FA3)">✕</div>
+          <div style="flex:1;height:12px;background:var(--track,#EDF0F6);border-radius:8px;overflow:hidden"><div style="width:{{ iwPct }};height:100%;background:#2FBFA0;border-radius:8px;transition:width .4s"></div></div>
+          <span style="font-size:13px;font-weight:800;color:var(--text,#12172B)">{{ iwCount }}</span>
+        </div>
+        <div style="font-size:13px;font-weight:800;color:#2FBFA0;letter-spacing:.5px;margin-bottom:8px">{{ iwPromptLabel }}</div>
+        <div style="background:var(--card,#fff);border-radius:26px;padding:34px 20px;text-align:center;margin-bottom:20px;box-shadow:0 16px 40px -22px rgba(40,60,110,.5)">
+          <div style="font-size:13px;color:var(--muted,#8A8FA3);font-weight:700;margin-bottom:6px">INFINITIF</div>
+          <div lang="en" translate="no" style="font-size:36px;font-weight:800;color:var(--text,#12172B);letter-spacing:-1px">{{ iwWord }}</div>
+        </div>
+        <input value="{{ iwVal }}" onInput="{{ iwInput }}" placeholder="Ta réponse…" style="width:100%;background:var(--card,#fff);border:2px solid {{ iwInputBorder }};border-radius:18px;padding:18px;font-size:18px;font-weight:600;color:var(--text,#12172B);outline:none;font-family:inherit;text-align:center" />
+        <sc-if value="{{ iwChecked }}" hint-placeholder-val="{{ false }}">
+          <div style="text-align:center;margin-top:16px;font-size:15px;font-weight:700;color:{{ iwResultColor }};animation:ec-pop .3s">{{ iwResultText }}</div>
+        </sc-if>
+        <div style="flex:1"></div>
+        <button class="ec-btn" onClick="{{ iwAction }}" style="width:100%;background:{{ iwBtnColor }};color:#fff;border-radius:20px;padding:17px;font-size:16px;font-weight:800;box-shadow:0 14px 26px -12px rgba(79,142,247,.5)">{{ iwBtnText }}</button>
+      </div>
+    </sc-if>
+
     <!-- CATEGORIES -->
     <sc-if value="{{ isCategories }}" hint-placeholder-val="{{ false }}">
       <div class="ec-scr ec-scroll" style="position:absolute;inset:0;padding:64px 20px 108px;overflow-y:auto">
@@ -272,7 +363,7 @@
     <sc-if value="{{ isSession }}" hint-placeholder-val="{{ false }}">
       <div class="ec-scr" style="position:absolute;inset:0;background:var(--bg,#EEF1F7);padding:64px 20px 32px;display:flex;flex-direction:column">
         <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
-          <div class="ec-btn" onClick="{{ goHome }}" style="width:34px;height:34px;border-radius:11px;background:var(--card,#fff);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--muted,#8A8FA3);box-shadow:0 4px 12px -6px rgba(40,60,110,.4)">✕</div>
+          <div class="ec-btn" onClick="{{ sExit }}" style="width:34px;height:34px;border-radius:11px;background:var(--card,#fff);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--muted,#8A8FA3);box-shadow:0 4px 12px -6px rgba(40,60,110,.4)">✕</div>
           <div style="flex:1;height:12px;background:var(--track,#EDF0F6);border-radius:8px;overflow:hidden"><div style="width:{{ sPct }};height:100%;background:linear-gradient(90deg,#4F8EF7,#59C173);border-radius:8px;transition:width .4s"></div></div>
           <span style="font-size:13px;font-weight:800;color:var(--text,#12172B)">{{ sCount }}</span>
         </div>
@@ -803,6 +894,9 @@ class Component extends DCLogic {
     mLeft: [], mRight: [], mSel: null, mMatched: [],
     // timed
     tLeft: 30, tScore: 0, tIdx: 0,
+    // irregular verbs quiz / write
+    irIdx: 0, irSel: null, irCorrect: 0, irData: [],
+    iwIdx: 0, iwVal: '', iwChecked: false, iwCorrect: 0, iwData: [],
     // misc
     dirMode: 'random', sessionWords: [],
     searchVal: '', filter: 'all', importType: 'paste', detail: null, detailPrev: 'categories',
@@ -1192,6 +1286,59 @@ class Component extends DCLogic {
     this.setState({ screen:'session', mode:'irregular', sIdx:0, flipped:false, sKnown:0, sessionWords:words, dirs:[] });
   };
 
+  // ---- verbes irréguliers : hub + modes dédiés ----
+  goIrregularHub = () => this.setState(s => ({ screen:'irregularHub', prev:s.screen }));
+  goIrregularTable = () => this.setState({ screen:'irregularTable' });
+
+  pickIrregularField = () => this.shuffle(['past','pp','fr'])[0];
+  irFieldLabel(field, verb){
+    if(field==='past') return verb ? 'QUEL EST LE PRÉTÉRIT ?' : 'ÉCRIS LE PRÉTÉRIT';
+    if(field==='pp') return verb ? 'QUEL EST LE PARTICIPE PASSÉ ?' : 'ÉCRIS LE PARTICIPE PASSÉ';
+    return verb ? 'QUELLE EST LA TRADUCTION ?' : 'ÉCRIS LA TRADUCTION';
+  }
+
+  startIrregularQuiz = () => {
+    const data = this.shuffle(this.IRREGULAR_VERBS).slice(0,10).map(v => {
+      const field = this.pickIrregularField();
+      const answer = v[field];
+      const wrongPool = this.IRREGULAR_VERBS.filter(x => x!==v && x[field]!==answer);
+      const wrong = this.shuffle(wrongPool).slice(0,3).map(x=>x[field]);
+      const options = this.shuffle([answer, ...wrong]);
+      return { base:v.base, label:this.irFieldLabel(field, true), answer, options, ref:v };
+    });
+    this.setState({ screen:'irregularQuiz', irIdx:0, irSel:null, irCorrect:0, irData:data });
+  };
+  selectIrregularQuiz = (i) => this.setState(s => {
+    if(s.irSel!=null) return {};
+    const item = s.irData[s.irIdx];
+    const correct = item.options[i] === item.answer;
+    this.recordAnswer(item.ref, correct);
+    return { irSel:i, irCorrect:s.irCorrect+(correct?1:0) };
+  });
+  irNext = () => this.setState(s => {
+    if(s.irIdx+1 >= s.irData.length){ this.finish(s.irCorrect, s.irData.length); return {}; }
+    return { irIdx:s.irIdx+1, irSel:null };
+  });
+
+  startIrregularWrite = () => {
+    const data = this.shuffle(this.IRREGULAR_VERBS).slice(0,10).map(v => {
+      const field = this.pickIrregularField();
+      return { base:v.base, label:this.irFieldLabel(field, false), answer:v[field], ref:v };
+    });
+    this.setState({ screen:'irregularWrite', iwIdx:0, iwVal:'', iwChecked:false, iwCorrect:0, iwData:data });
+  };
+  iwInput = (e) => this.setState({ iwVal:e.target.value });
+  iwAction = () => this.setState(s => {
+    const item = s.iwData[s.iwIdx];
+    if(!s.iwChecked){
+      const ok = s.iwVal.trim().toLowerCase() === item.answer.toLowerCase();
+      this.recordAnswer(item.ref, ok);
+      return { iwChecked:true, iwCorrect:s.iwCorrect+(ok?1:0) };
+    }
+    if(s.iwIdx+1 >= s.iwData.length){ this.finish(s.iwCorrect, s.iwData.length); return {}; }
+    return { iwIdx:s.iwIdx+1, iwVal:'', iwChecked:false };
+  });
+
   flip = () => this.setState(s => ({ flipped: !s.flipped }));
   answer = (known) => {
     const s = this.state;
@@ -1424,7 +1571,14 @@ class Component extends DCLogic {
     const reviewCount = this.words.filter(w=>w.miss).length;
 
     const modes = this.MODES.filter(m=>m.id!=='classic').concat(this.MODES.filter(m=>m.id==='classic'))
-      .map(m => ({ ...m, onClick: () => this.startMode(m.id) }));
+      .map(m => ({ ...m, onClick: () => m.id==='irregular' ? this.goIrregularHub() : this.startMode(m.id) }));
+
+    const irModes = [
+      {name:'Tableau complet', desc:'Voir tous les verbes irréguliers', emoji:'📋', tint:'rgba(122,107,247,.15)', onClick:()=>this.goIrregularTable()},
+      {name:'Flashcards', desc:'Base · prétérit · participe · traduction', emoji:'🃏', tint:'rgba(89,193,115,.16)', onClick:()=>this.startIrregular()},
+      {name:'Multichoice', desc:'Choisis la bonne réponse', emoji:'🎯', tint:'rgba(79,142,247,.15)', onClick:()=>this.startIrregularQuiz()},
+      {name:'Write It', desc:'Écris la forme demandée', emoji:'⌨️', tint:'rgba(247,122,196,.15)', onClick:()=>this.startIrregularWrite()},
+    ];
 
     // session
     const sList = s.sessionWords.length ? s.sessionWords : this.words;
@@ -1456,6 +1610,8 @@ class Component extends DCLogic {
       isTimed: s.screen==='timed', isAdd: s.screen==='add', isSearch: s.screen==='search',
       isImport: s.screen==='import', isDetail: s.screen==='detail', isProfile: s.screen==='profile',
       isAddCat: s.screen==='addcat',
+      isIrregularHub: s.screen==='irregularHub', isIrregularTable: s.screen==='irregularTable',
+      isIrregularQuiz: s.screen==='irregularQuiz', isIrregularWrite: s.screen==='irregularWrite',
       isWordlist: s.screen==='wordlist', goWordlist: ()=>this.go('wordlist'),
       wlQuery: s.wlQuery, wlInput: this.wlInput,
       showCeleb: s.screen==='celeb',
@@ -1473,7 +1629,9 @@ class Component extends DCLogic {
       goalOffset: 326 - 326*Math.min(1, goal ? dailyDone/goal : 0),
       learnedCount, reviewCount, successRate,
 
-      cats, modes,
+      cats, modes, irModes,
+      goIrregularHub: this.goIrregularHub, goIrregularTable: this.goIrregularTable,
+      irregularRows: this.IRREGULAR_VERBS,
       week: dayLabels.map((label,i)=>({ label,
         h: (weekVals[i] ? Math.max(10, Math.round(weekVals[i]/weekMax*100)) : 4)+'%',
         color: (weekVals[i]===weekMax && weekMax>0) ? '#59C173' : (weekVals[i] ? '#4F8EF7' : '#A9C6FB') })),
@@ -1526,6 +1684,37 @@ class Component extends DCLogic {
       sBackSize: fontFor(isIrregular ? sCur.past+' → '+sCur.pp : (enToFr ? sCur.fr : sCur.en)),
       sDirLabel: isIrregular ? 'VERBE IRRÉGULIER' : (enToFr ? 'EN → FR' : 'FR → EN'),
       sDirColor: isIrregular ? '#2FBFA0' : (enToFr ? '#4F8EF7' : '#59C173'),
+      sExit: isIrregular ? this.goIrregularHub : (()=>this.go('home','home')),
+
+      // irregular verbs quiz
+      irCount: s.irData.length? (s.irIdx+1)+' / '+s.irData.length : '',
+      irPct: s.irData.length? Math.round(s.irIdx/s.irData.length*100)+'%':'0%',
+      irWord: s.irData[s.irIdx]?.base || '',
+      irPromptLabel: s.irData[s.irIdx]?.label || '',
+      irAnswered: s.irSel!=null,
+      irNext: this.irNext,
+      irOptions: (s.irData[s.irIdx]?.options||[]).map((t,i)=>{
+        const ans = s.irData[s.irIdx].answer;
+        let bg='var(--card,#fff)', fg='var(--text,#12172B)', border='var(--line,rgba(0,0,0,.08))', icon='';
+        if(s.irSel!=null){
+          if(t===ans){ bg='rgba(89,193,115,.12)'; fg='#3FA85E'; border='#59C173'; icon='✓'; }
+          else if(i===s.irSel){ bg='rgba(255,107,107,.1)'; fg='#FF6B6B'; border='#FF6B6B'; icon='✕'; }
+          else { fg='var(--muted,#8A8FA3)'; }
+        }
+        return { text:t, bg, fg, border, icon, onClick:()=>this.selectIrregularQuiz(i) };
+      }),
+
+      // irregular verbs write it
+      iwCount: s.iwData.length? (s.iwIdx+1)+' / '+s.iwData.length : '',
+      iwPct: s.iwData.length? Math.round(s.iwIdx/s.iwData.length*100)+'%':'0%',
+      iwWord: s.iwData[s.iwIdx]?.base || '',
+      iwPromptLabel: s.iwData[s.iwIdx]?.label || '',
+      iwVal: s.iwVal, iwChecked: s.iwChecked, iwInput: this.iwInput, iwAction: this.iwAction,
+      iwInputBorder: s.iwChecked ? (s.iwVal.trim().toLowerCase()===(s.iwData[s.iwIdx]?.answer||'').toLowerCase()?'#59C173':'#FF6B6B') : 'var(--line,rgba(0,0,0,.06))',
+      iwResultColor: s.iwVal.trim().toLowerCase()===(s.iwData[s.iwIdx]?.answer||'').toLowerCase()?'#3FA85E':'#FF6B6B',
+      iwResultText: s.iwVal.trim().toLowerCase()===(s.iwData[s.iwIdx]?.answer||'').toLowerCase()?'✓ Correct!':('Réponse : '+(s.iwData[s.iwIdx]?.answer||'')),
+      iwBtnColor: s.iwChecked?'#59C173':'#4F8EF7',
+      iwBtnText: s.iwChecked?'Continuer →':'Vérifier',
 
       // quiz view
       qCount: s.qData.length? (s.qIdx+1)+' / '+s.qData.length : '',
