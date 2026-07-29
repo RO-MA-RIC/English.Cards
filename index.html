@@ -146,7 +146,7 @@
           <span style="font-size:20px">›</span>
         </button>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-          <sc-for list="{{ modes }}" as="m" hint-placeholder-count="5">
+          <sc-for list="{{ modes }}" as="m" hint-placeholder-count="6">
             <button class="ec-btn" onClick="{{ m.onClick }}" style="text-align:left;background:var(--card,#fff);border-radius:20px;padding:16px;box-shadow:0 8px 22px -14px rgba(40,60,110,.4)">
               <div style="width:48px;height:48px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:26px;background:{{ m.tint }}">{{ m.emoji }}</div>
               <div style="font-size:15px;font-weight:800;color:var(--text,#12172B);margin-top:12px">{{ m.name }}</div>
@@ -292,6 +292,7 @@
               <div style="font-size:{{ sBackSize }};font-weight:800;text-align:center;letter-spacing:-.5px;line-height:1.15">{{ sBack }}</div>
               <sc-if value="{{ sHasIpa }}" hint-placeholder-val="{{ false }}"><div style="font-size:17px;opacity:.85;margin-top:8px">{{ sCur.ipa }}</div></sc-if>
               <sc-if value="{{ sHasEx }}" hint-placeholder-val="{{ false }}"><div style="width:60px;height:2px;background:rgba(255,255,255,.35);margin:20px 0;border-radius:2px"></div><div lang="en" translate="no" style="font-size:16px;text-align:center;line-height:1.5;font-style:italic;opacity:.95">"{{ sCur.ex }}"</div></sc-if>
+              <sc-if value="{{ sHasTranslation }}" hint-placeholder-val="{{ false }}"><div style="width:60px;height:2px;background:rgba(255,255,255,.35);margin:20px 0;border-radius:2px"></div><div style="font-size:17px;text-align:center;opacity:.92">🇫🇷 {{ sTranslation }}</div></sc-if>
               <span style="position:absolute;top:20px;right:20px;font-size:20px;opacity:.9">🔊</span>
             </div>
           </div>
@@ -1063,6 +1064,64 @@ class Component extends DCLogic {
     {en:'Keep your cool', fr:'Garder son calme', ipa:'', ex:'', cat:'Idioms'},
   ];
 
+  IRREGULAR_VERBS = [
+    {base:'Be', past:'Was/Were', pp:'Been', fr:'Être'},
+    {base:'Begin', past:'Began', pp:'Begun', fr:'Commencer'},
+    {base:'Break', past:'Broke', pp:'Broken', fr:'Casser'},
+    {base:'Bring', past:'Brought', pp:'Brought', fr:'Apporter'},
+    {base:'Build', past:'Built', pp:'Built', fr:'Construire'},
+    {base:'Buy', past:'Bought', pp:'Bought', fr:'Acheter'},
+    {base:'Catch', past:'Caught', pp:'Caught', fr:'Attraper'},
+    {base:'Choose', past:'Chose', pp:'Chosen', fr:'Choisir'},
+    {base:'Come', past:'Came', pp:'Come', fr:'Venir'},
+    {base:'Cut', past:'Cut', pp:'Cut', fr:'Couper'},
+    {base:'Do', past:'Did', pp:'Done', fr:'Faire'},
+    {base:'Drink', past:'Drank', pp:'Drunk', fr:'Boire'},
+    {base:'Drive', past:'Drove', pp:'Driven', fr:'Conduire'},
+    {base:'Eat', past:'Ate', pp:'Eaten', fr:'Manger'},
+    {base:'Fall', past:'Fell', pp:'Fallen', fr:'Tomber'},
+    {base:'Feel', past:'Felt', pp:'Felt', fr:'Ressentir'},
+    {base:'Find', past:'Found', pp:'Found', fr:'Trouver'},
+    {base:'Fly', past:'Flew', pp:'Flown', fr:'Voler'},
+    {base:'Forget', past:'Forgot', pp:'Forgotten', fr:'Oublier'},
+    {base:'Get', past:'Got', pp:'Gotten', fr:'Obtenir'},
+    {base:'Give', past:'Gave', pp:'Given', fr:'Donner'},
+    {base:'Go', past:'Went', pp:'Gone', fr:'Aller'},
+    {base:'Have', past:'Had', pp:'Had', fr:'Avoir'},
+    {base:'Hear', past:'Heard', pp:'Heard', fr:'Entendre'},
+    {base:'Hold', past:'Held', pp:'Held', fr:'Tenir'},
+    {base:'Keep', past:'Kept', pp:'Kept', fr:'Garder'},
+    {base:'Know', past:'Knew', pp:'Known', fr:'Savoir'},
+    {base:'Leave', past:'Left', pp:'Left', fr:'Partir'},
+    {base:'Lose', past:'Lost', pp:'Lost', fr:'Perdre'},
+    {base:'Make', past:'Made', pp:'Made', fr:'Fabriquer'},
+    {base:'Meet', past:'Met', pp:'Met', fr:'Rencontrer'},
+    {base:'Pay', past:'Paid', pp:'Paid', fr:'Payer'},
+    {base:'Put', past:'Put', pp:'Put', fr:'Mettre'},
+    {base:'Read', past:'Read', pp:'Read', fr:'Lire'},
+    {base:'Run', past:'Ran', pp:'Run', fr:'Courir'},
+    {base:'Say', past:'Said', pp:'Said', fr:'Dire'},
+    {base:'See', past:'Saw', pp:'Seen', fr:'Voir'},
+    {base:'Sell', past:'Sold', pp:'Sold', fr:'Vendre'},
+    {base:'Send', past:'Sent', pp:'Sent', fr:'Envoyer'},
+    {base:'Sing', past:'Sang', pp:'Sung', fr:'Chanter'},
+    {base:'Sit', past:'Sat', pp:'Sat', fr:"S'asseoir"},
+    {base:'Sleep', past:'Slept', pp:'Slept', fr:'Dormir'},
+    {base:'Speak', past:'Spoke', pp:'Spoken', fr:'Parler'},
+    {base:'Spend', past:'Spent', pp:'Spent', fr:'Dépenser'},
+    {base:'Stand', past:'Stood', pp:'Stood', fr:'Se tenir debout'},
+    {base:'Swim', past:'Swam', pp:'Swum', fr:'Nager'},
+    {base:'Take', past:'Took', pp:'Taken', fr:'Prendre'},
+    {base:'Teach', past:'Taught', pp:'Taught', fr:'Enseigner'},
+    {base:'Tell', past:'Told', pp:'Told', fr:'Raconter'},
+    {base:'Think', past:'Thought', pp:'Thought', fr:'Penser'},
+    {base:'Understand', past:'Understood', pp:'Understood', fr:'Comprendre'},
+    {base:'Wake', past:'Woke', pp:'Woken', fr:'Se réveiller'},
+    {base:'Wear', past:'Wore', pp:'Worn', fr:'Porter'},
+    {base:'Win', past:'Won', pp:'Won', fr:'Gagner'},
+    {base:'Write', past:'Wrote', pp:'Written', fr:'Écrire'},
+  ];
+
   LS_W = 'ec_words_v1';
   LS_S = 'ec_stats_v1';
   dailyGoal = 20;
@@ -1100,6 +1159,7 @@ class Component extends DCLogic {
     {id:'write', name:'Write It', desc:'Type the translation', emoji:'⌨️', tint:'rgba(247,122,196,.15)'},
     {id:'match', name:'Word Matching', desc:'Pair words to meanings', emoji:'🔗', tint:'rgba(79,142,247,.15)'},
     {id:'timed', name:'Timed Challenge', desc:'Beat the clock', emoji:'⏱️', tint:'rgba(255,182,72,.18)'},
+    {id:'irregular', name:'Verbes irréguliers', desc:'Base · prétérit · participe passé', emoji:'🔄', tint:'rgba(47,191,160,.16)'},
     {id:'classic', name:'Flashcards', desc:'Flip and self-rate', emoji:'🃏', tint:'rgba(89,193,115,.16)'},
   ];
 
@@ -1125,6 +1185,11 @@ class Component extends DCLogic {
     if(id==='write') return this.setState({screen:'write',wIdx:0,wVal:'',wChecked:false,wCorrect:0});
     if(id==='match') return this.startMatch();
     if(id==='timed') return this.startTimed();
+    if(id==='irregular') return this.startIrregular();
+  };
+  startIrregular = () => {
+    const words = this.shuffle(this.IRREGULAR_VERBS).slice(0,12).map(v => ({ ...v, emoji:'🔄' }));
+    this.setState({ screen:'session', mode:'irregular', sIdx:0, flipped:false, sKnown:0, sessionWords:words, dirs:[] });
   };
 
   flip = () => this.setState(s => ({ flipped: !s.flipped }));
@@ -1366,6 +1431,7 @@ class Component extends DCLogic {
     const dir = s.dirs[s.sIdx] || 'en';
     const sCur = sList[s.sIdx] || sList[0];
     const enToFr = dir==='en';
+    const isIrregular = s.mode==='irregular';
     const fontFor = (t)=> (t||'').length>16?'26px':((t||'').length>9?'34px':'44px');
 
     // ---- gamification dérivée des stats réelles ----
@@ -1451,14 +1517,15 @@ class Component extends DCLogic {
       flipped: s.flipped, notFlipped: !s.flipped,
       flipT: s.flipped?'rotateY(180deg)':'rotateY(0deg)', sKey: s.sIdx,
       sCur,
-      sFront: enToFr ? sCur.en : sCur.fr,
-      sFrontSub: enToFr ? sCur.ipa : 'français',
-      sBack: enToFr ? sCur.fr : sCur.en,
-      sHasIpa: !!sCur.ipa, sHasEx: !!sCur.ex,
-      sFrontSize: fontFor(enToFr ? sCur.en : sCur.fr),
-      sBackSize: fontFor(enToFr ? sCur.fr : sCur.en),
-      sDirLabel: enToFr ? 'EN → FR' : 'FR → EN',
-      sDirColor: enToFr ? '#4F8EF7' : '#59C173',
+      sFront: isIrregular ? sCur.base : (enToFr ? sCur.en : sCur.fr),
+      sFrontSub: isIrregular ? 'infinitif' : (enToFr ? sCur.ipa : 'français'),
+      sBack: isIrregular ? sCur.past+' → '+sCur.pp : (enToFr ? sCur.fr : sCur.en),
+      sHasIpa: !isIrregular && !!sCur.ipa, sHasEx: !isIrregular && !!sCur.ex,
+      sHasTranslation: isIrregular, sTranslation: isIrregular ? sCur.fr : '',
+      sFrontSize: fontFor(isIrregular ? sCur.base : (enToFr ? sCur.en : sCur.fr)),
+      sBackSize: fontFor(isIrregular ? sCur.past+' → '+sCur.pp : (enToFr ? sCur.fr : sCur.en)),
+      sDirLabel: isIrregular ? 'VERBE IRRÉGULIER' : (enToFr ? 'EN → FR' : 'FR → EN'),
+      sDirColor: isIrregular ? '#2FBFA0' : (enToFr ? '#4F8EF7' : '#59C173'),
 
       // quiz view
       qCount: s.qData.length? (s.qIdx+1)+' / '+s.qData.length : '',
